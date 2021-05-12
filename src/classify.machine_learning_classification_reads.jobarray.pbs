@@ -1,0 +1,132 @@
+#!/bin/bash
+#$ -S /bin/bash
+#$ -cwd
+#$ -j y
+#$ -m a
+#$ -l  h_data=4G,h_rt=24:00:00,h_vmem=16G,highp
+#$ -t 1-1:1
+
+. /u/local/Modules/default/init/modules.sh
+module load samtools
+module load gcc/7.2.0
+module load anaconda/python2-4.2
+
+### LIST OF INPUT FILES
+input_file=/u/project/xjzhou/shuoli/code/iterative_cfSNV/V8_cleaned/demo/input_list_classify.txt
+
+
+###### REQUIRED TOOLS
+### PATH TO PICARD TOOLS (ABSOLUTE PATH TO .jar FILE)
+picard=/u/home/s/shuoli/code/picard/picard.jar
+
+### PATH TO SAMTOOLS (ABSOLUTE PATH TO EXECUTABLE FILE)
+samtools=/u/local/apps/samtools/1.9/bin/samtools
+
+### PATH TO JAVA (ABSOLUTE PATH TO EXECUTABLE FILE)
+java=/u/local/apps/java/jdk1.8.0_111/bin/java
+
+### PATH TO PYTHON (ABSOLUTE PATH TO EXECUTABLE FILE)
+python=/u/local/apps/anaconda/python2-4.2.0/bin/python
+
+### PATH TO BEDTOOLS (ABSOLUTE PATH TO EXECUTABLE FILE)
+bedtools=/u/local/apps/bedtools/2.26.0/gcc-4.4.7/bin/bedtools
+
+### PATH TO cfSNV SOURCE CODES (ABSOLUTE PATH TO THE FOLDER CONTAINING SOURCE CODES)
+cfSNV=/u/project/xjzhou/shuoli/code/iterative_cfSNV/V8_cleaned
+
+
+###### MAIN COMMANDS
+### READ PARAMETERS FROM LIST OF INPUT FILES
+read path sample_id unmerge_plasma_bam reference reference_dict  <<< "`head -$SGE_TASK_ID ${input_file} | tail -1`"
+
+tmp_dir=${path}/tmp
+input_dir=${tmp_dir}/filter
+indel_dir=${tmp_dir}/rebase
+output_dir=${tmp_dir}/deeplearn
+rebase_dir=${tmp_dir}/rebase
+estimate_dir=${tmp_dir}/estimate
+variant_dir=${tmp_dir}/variant
+depth_dir=${tmp_dir}/depth
+
+if [ ! -d "$output_dir" ]; then
+        mkdir $output_dir
+fi
+
+window=3
+
+
+
+### CONCATENATE PASS & HOLD AT ALL THRESHOLDS
+cat  ${input_dir}/${sample_id}.*.pass  > ${output_dir}/${sample_id}.pass
+
+cat ${input_dir}/${sample_id}.*.hold  > ${output_dir}/${sample_id}.hold
+ 
+
+
+### DEDUPLICATE AND GENERATE BED FILE
+
+${python} ${cfSNV}/py5.machinelearn.merge_dedup_candidates.py ${output_dir}/${sample_id}.pass ${output_dir}/${sample_id}.hold ${output_dir}/${sample_id}.bed
+
+
+
+### EXTRACT READS AT BED FILE LOCATIONS  ==> TO OUTPUT_DIR
+
+
+${java} -Xms5G -jar ${picard} BedToIntervalList I=${output_dir}/${sample_id}.bed O=${output_dir}/${sample_id}.interval_list SD=${reference_dict}
+
+${java} -Xms5G -jar ${picard} FilterSamReads I=${unmerge_plasma_bam} O=${output_dir}/${sample_id}.paired-reads.bam INTERVAL_LIST=${output_dir}/${sample_id}.interval_list FILTER=includePairedIntervals SORT_ORDER=coordinate
+
+
+${samtools} sort -n -o ${output_dir}/${sample_id}.paired-reads.qsort.bam ${output_dir}/${sample_id}.paired-reads.bam
+
+${samtools} view ${output_dir}/${sample_id}.paired-reads.qsort.bam > ${output_dir}/${sample_id}.paired-reads.qsort.sam
+
+ 
+
+
+### PREPARE BED FILE WITH REFERENCE INFORMATION 
+
+${python} ${cfSNV}/py6.machinelearn.bed_for_getfasta.py ${window} ${output_dir}/${sample_id}.bed ${output_dir}/${sample_id}.getfastabed
+
+${bedtools} getfasta -bedOut -fi ${reference} -bed ${output_dir}/${sample_id}.getfastabed > ${output_dir}/${sample_id}.fastabed
+
+${python} ${cfSNV}/py7.machinelearn.bed_for_feature.py ${window} ${output_dir}/${sample_id}.fastabed ${output_dir}/${sample_id}.preparebed
+
+ 
+
+### EXTRACT FEATURES FROM READS
+
+
+${python} ${cfSNV}/py8.machinelearn.extract_features_from_reads_filter_cluster.py ${output_dir}/${sample_id}.preparebed ${output_dir}/${sample_id}.paired-reads.qsort.sam ${output_dir}/${sample_id}.paired-reads.qsort.features ${output_dir}/${sample_id}.filter_cluster.bed
+
+${python} ${cfSNV}/py9.machinelearn.split_overlap_and_nonoverlap.py ${output_dir}/${sample_id}.paired-reads.qsort.features ${output_dir}/${sample_id}.paired-reads.qsort.overlap.features ${output_dir}/${sample_id}.paired-reads.qsort.nonoverlap.features
+
+${python} ${cfSNV}/py10.machinelearn.expand_features_nonoverlap.py query ${output_dir}/${sample_id}.paired-reads.qsort.nonoverlap.features
+
+${python} ${cfSNV}/py10.machinelearn.expand_features_overlap.py query ${output_dir}/${sample_id}.paired-reads.qsort.overlap.features
+
+
+ 
+
+### CLASSIFY READS
+
+${python} ${cfSNV}/py11.machinelearn.RandomForest.py ${output_dir} ${sample_id}.paired-reads.qsort.overlap.features.expand ${sample_id}.paired-reads.qsort.nonoverlap.features.expand  ${cfSNV}/RF41_overlap.sav ${cfSNV}/RF41_nonoverlap.sav
+
+
+### GENERATE RESULTS
+
+
+${python} ${cfSNV}/py12.machinelearn.collect_results.py ${output_dir} ${sample_id}
+
+${bedtools} intersect -v -a ${output_dir}/${sample_id}.after_machine_learn -b ${indel_dir}/${sample_id}.filter_indel.bed > ${output_dir}/${sample_id}.after_indel
+
+${bedtools} intersect -v -a ${output_dir}/${sample_id}.after_indel -b ${output_dir}/${sample_id}.filter_cluster.bed > ${output_dir}/${sample_id}.after_cluster
+
+${python} ${cfSNV}/py13.machinelearn.format_results.py ${output_dir} ${sample_id} ${path}
+
+
+rm ${input_dir}/${sample_id}* ${output_dir}/${sample_id}* ${indel_dir}/${sample_id}* ${rebase_dir}/${sample_id}* ${estimate_dir}/${sample_id}* ${variant_dir}/${sample_id}* ${depth_dir}/${sample_id}*
+
+
+
+

@@ -1,0 +1,58 @@
+#!/bin/bash
+#$ -S /bin/bash
+#$ -cwd
+#$ -j y
+#$ -m a
+#$ -l  h_data=2G,h_rt=24:00:00,h_vmem=8G,highp
+#$ -t 1-1:1
+
+
+. /u/local/Modules/default/init/modules.sh
+
+
+module load samtools
+module load gcc/7.2.0
+module load anaconda/python2-4.2
+
+
+### LIST OF INPUT FILES
+input_file=/u/project/xjzhou/shuoli/code/iterative_cfSNV/V8_cleaned/demo/input_list_dataprep0.txt
+
+###### PREREQUISITE PACKAGES ######
+###### Please change these paths
+### PATH TO SAMTOOLS (ABSOLUTE PATH TO EXECUTABLE FILE)
+samtools=/u/local/apps/samtools/1.9/bin/samtools
+
+### PATH TO PYTHON (ABSOLUTE PATH TO EXECUTABLE FILE)
+python=/u/local/apps/anaconda/python2-4.2.0/bin/python
+
+### PATH TO cfSNV SOURCE CODES (ABSOLUTE PATH TO THE FOLDER CONTAINING SOURCE CODES)
+cfSNV=/u/project/xjzhou/shuoli/code/iterative_cfSNV/V8_cleaned
+
+
+###### MAIN COMMANDS
+
+### READ PARAMETERS FROM LIST OF INPUT FILES
+read path plasma_unmerged_file full_target_bed sample_id <<< "`head -$SGE_TASK_ID ${input_file} | tail -1`"
+
+tmp_dir=${path}/tmp
+output_dir=${tmp_dir}/depth
+
+if [ ! -d "$tmp_dir" ]; then
+        mkdir $tmp_dir
+fi
+
+if [ ! -d "$output_dir" ]; then
+	mkdir $output_dir
+fi
+
+
+
+${samtools} stats ${plasma_unmerged_file} | grep -i "bases mapped (cigar):" | cut -f3 >> ${output_dir}/${sample_id}.base_mapped.txt
+
+${python} ${cfSNV}/py15.estimate_sequencing_depth.py ${full_target_bed} ${output_dir}/${sample_id}.base_mapped.txt ${output_dir}/${sample_id}.depth.txt
+
+
+
+
+

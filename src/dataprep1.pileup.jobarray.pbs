@@ -1,0 +1,65 @@
+#!/bin/bash
+#$ -S /bin/bash
+#$ -cwd
+#$ -j y
+#$ -m a
+#$ -l  h_data=2G,h_rt=24:00:00,highp
+#$ -t 1-1:1
+
+
+. /u/local/Modules/default/init/modules.sh
+module load samtools
+module load gcc/7.2.0
+module load anaconda/python2-4.2
+
+### LIST OF INPUT FILES
+input_file=/u/project/xjzhou/shuoli/code/iterative_cfSNV/V8_cleaned/demo/input_list_dataprep1.txt
+
+
+###### PREREQUISITE PACKAGES ######
+###### Please change these paths
+### PATH TO SAMTOOLS (ABSOLUTE PATH TO EXECUTABLE FILE)
+samtools=/u/local/apps/samtools/1.9/bin/samtools
+
+### PATH TO PYTHON (ABSOLUTE PATH TO EXECUTABLE FILE)
+python=/u/local/apps/anaconda/python2-4.2.0/bin/python
+
+### PATH TO cfSNV SOURCE CODES (ABSOLUTE PATH TO THE FOLDER CONTAINING SOURCE CODES)
+cfSNV=/u/project/xjzhou/shuoli/code/iterative_cfSNV/V8_cleaned
+
+
+###### MAIN COMMANDS
+
+### READ PARAMETERS FROM LIST OF INPUT FILES
+read path plasma_unmerged_file normal_file plasma_merged_extendedFrags_file plasma_merged_notCombined_file target_bed reference sample_id <<< "`head -$SGE_TASK_ID ${input_file} | tail -1`"
+tmp_dir=${path}/tmp
+pileup_dir=${tmp_dir}/pileup
+rebase_dir=${tmp_dir}/rebase
+depth_dir=${tmp_dir}/depth
+
+if [ ! -d "$tmp_dir" ]; then
+        mkdir $tmp_dir
+fi
+
+if [ ! -d "$pileup_dir" ]; then
+        mkdir $pileup_dir
+fi
+
+if [ ! -d "$rebase_dir" ]; then
+        mkdir $rebase_dir
+fi
+
+bedpart_name=${target_bed##*/}
+bedpart_name=${bedpart_name%.*}
+
+name=${sample_id}_${bedpart_name}
+
+${samtools} mpileup -A -q 0 -Q 3 -B  --ff UNMAP,SECONDARY,QCFAIL,DUP,SUPPLEMENTARY -s -f ${reference} -l ${target_bed} ${plasma_unmerged_file} ${normal_file} ${plasma_merged_extendedFrags_file} ${plasma_merged_notCombined_file}  > ${pileup_dir}/${name}.pileup
+
+read depth < ${depth_dir}/${sample_id}.depth.txt
+
+${python} ${cfSNV}/py1.dataprep.rebase.quicker.py ${pileup_dir}/${name}.pileup  ${rebase_dir}/${name}.rebase ${rebase_dir}/${name}.indel ${depth}
+
+
+
+

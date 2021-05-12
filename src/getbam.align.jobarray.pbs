@@ -1,0 +1,78 @@
+#!/bin/bash
+#$ -S /bin/bash
+#$ -cwd
+#$ -j y
+#$ -m a
+#$ -l  h_data=2G,h_rt=24:00:00,h_vmem=8G
+#$ -t 1-2:1
+
+
+. /u/local/Modules/default/init/modules.sh
+
+### LIST OF INPUT FILES
+input_file=/u/project/xjzhou/shuoli/code/iterative_cfSNV/V8_cleaned/demo/input_list_getbam_align.txt
+
+### PATH TO GATK version 3.8.0 (ABSOLUTE PATH TO .jar FILE)
+GATK=/u/home/s/shuoli/code/GenomeAnalysisTK-3.8-0/GenomeAnalysisTK.jar
+
+### PATH TO PICARD TOOLS (ABSOLUTE PATH TO .jar FILE)
+picard=/u/home/s/shuoli/code/picard/picard.jar
+
+### PATH TO BWA (ABSOLUTE PATH TO EXECUTABLE FILE)
+bwa=/u/local/apps/bwa/0.7.17/gcc-4.4.7/bwa
+
+### PATH TO SAMTOOLS (ABSOLUTE PATH TO EXECUTABLE FILE)
+samtools=/u/local/apps/samtools/1.9/bin/samtools
+
+### PATH TO JAVA (ABSOLUTE PATH TO EXECUTABLE FILE)
+java=/u/local/apps/java/jdk1.8.0_111/bin/java
+
+### PATH TO BEDTOOLS (ABSOLUTE PATH TO EXECUTABLE FILE)
+bedtools=/u/local/apps/bedtools/2.26.0/gcc-4.4.7/bin/bedtools
+
+
+
+read path fastq1 fastq2 file_id SNP_database reference <<< "`head -$SGE_TASK_ID ${input_file} | tail -1`"
+
+output_dir=${path}
+
+if [ ! -d "$output_dir" ]; then
+	mkdir $output_dir
+fi
+
+
+SECONDS=0
+
+cd ${path}
+
+module load samtools
+
+### REFERENCE DICT PREPARATION USING PICARD
+${java} -Xms1g -jar ${picard} CreateSequenceDictionary REFERENCE=${reference} OUTPUT=${reference%.*}.dict
+reference_dict=${reference%.*}.dict
+
+${bwa} mem -t 4 ${reference} ${fastq1} ${fastq2} | ${samtools} sort -@3 -O BAM -o ${file_id}.sorted.bam -
+${samtools} index ${file_id}.sorted.bam
+
+${java} -Xms1G -jar ${picard} MarkDuplicates I=${file_id}.sorted.bam O=${file_id}.sorted.rmdup.bam M=${file_id}.marked_dup_metrics.txt REMOVE_DUPLICATES=true
+${java} -Xms1G -jar ${picard} AddOrReplaceReadGroups I=${file_id}.sorted.rmdup.bam  O=${file_id}.sorted.rmdup.addreadgroup.bam RGID=4 RGLB=lib1 RGPL=illumina RGPU=unit1 RGSM=20
+${samtools} index ${file_id}.sorted.rmdup.addreadgroup.bam
+rm ${file_id}.sorted.bam ${file_id}.sorted.bam.bai ${file_id}.sorted.rmdup.bam
+
+${java} -Xms1G -jar ${GATK}  -T RealignerTargetCreator -R ${reference} -I ${file_id}.sorted.rmdup.addreadgroup.bam -o ${file_id}.forIndelRealigner.intervals
+${java} -Xms1G -jar ${GATK} -T IndelRealigner  -R ${reference} -I ${file_id}.sorted.rmdup.addreadgroup.bam  -targetIntervals ${file_id}.forIndelRealigner.intervals  -o ${file_id}.realignedBam.bam
+rm ${file_id}.sorted.rmdup.addreadgroup.bam.bai ${file_id}.sorted.rmdup.addreadgroup.bam
+
+${java} -Xms1G -jar ${GATK} -T BaseRecalibrator -R ${reference} -I ${file_id}.realignedBam.bam -o ${file_id}.recal_data.table -knownSites ${SNP_database}
+${java} -Xms1G -jar ${GATK} -T PrintReads -R ${reference} -I ${file_id}.realignedBam.bam -BQSR ${file_id}.recal_data.table -o ${file_id}.recal.bam
+rm ${file_id}.realignedBam.bam ${file_id}.realignedBam.bai
+
+rm *.intervals *.table *.marked_dup_metrics.txt
+
+duration=${SECONDS}
+if (( ${duration} < 1200 )); then
+sleep 10m
+fi
+
+
+
