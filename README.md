@@ -2,7 +2,7 @@
 
 ## INTRODUCTION 
 
-cfSNV is an ultra-sensitive and accurate somatic SNV caller designed for cfDNA sequencing. Taking advantage of modern statistical models and machine learning approaches, cfSNV provides hierarchical mutation profiling and multi-layer error suppression, including error suppression in read mates, site-level error filtration and read-level error filtration. cfSNV is licensed under a Creative Commons Attribution-Noncommercial 4.0 International License, and can be obtained at https://zhoulab.dgsom.ucla.edu/pages/cfSNV with registration.
+cfSNV is an ultra-sensitive and accurate somatic SNV caller designed for cfDNA sequencing. Taking advantage of modern statistical models and machine learning approaches, cfSNV provides hierarchical mutation profiling and multi-layer error suppression, including error suppression in read mates, site-level error filtration and read-level error filtration. cfSNV can be freely used for educational and research purposes by non-profit institutions and U.S. government agencies only under the BSD license. For information on the use for a commercial purpose or by a commercial or for-profit entity, please contact Prof. Xiangong Jasmine Zhou (https://zhoulab.dgsom.ucla.edu/).
 
 
 
