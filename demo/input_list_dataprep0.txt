@@ -1,0 +1,1 @@
+demo demo/plasma.recal.bam demo/example_target_regions.bed plasma

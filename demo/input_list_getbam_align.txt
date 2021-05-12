@@ -1,0 +1,2 @@
+demo plasma_raw.fq1.gz plasma_raw.fq2.gz plasma chr22_dbSNP.vcf chr22.fa
+demo normal_raw.fq1.gz normal_raw.fq2.gz normal chr22_dbSNP.vcf chr22.fa

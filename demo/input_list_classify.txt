@@ -1,0 +1,1 @@
+demo plasma demo/plasma.recal.bam demo/chr22.fa demo/chr22.dict

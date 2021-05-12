@@ -1,0 +1,1 @@
+demo demo/plasma.recal.bam demo/normal.recal.bam demo/plasma.extendedFrags.recal.bam demo/plasma.notCombined.recal.bam demo/example_target_regions.bed demo/chr22.fa plasma
