@@ -1,7 +1,5 @@
-from parameter import *
-from _filter import *
-from _jenks import *
-from _probability import *
+from src.py._filter import *
+from src.py._probability import *
 import numpy as np
 
 

@@ -1,6 +1,5 @@
 from parameter import *
-from _jenks import *
-from _filter import *
+from src.py._filter import *
 import sys
 from collections import defaultdict
 from operator import itemgetter

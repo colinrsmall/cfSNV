@@ -2,21 +2,22 @@
 #$ -S /bin/bash
 #$ -cwd
 #$ -j y
-#$ -m a
-#$ -l  h_data=2G,h_rt=24:00:00,h_vmem=8G
+#$ -o log.out
+#$ -l  h_data=2G,h_rt=24:00:00,h_vmem=12G
 #$ -t 1-2:1
-
+#$ -M colinrsmall@yahoo.com
+#$ -m bea
 
 . /u/local/Modules/default/init/modules.sh
 
 ### LIST OF INPUT FILES
-input_file=/u/project/xjzhou/shuoli/code/iterative_cfSNV/V8_cleaned/demo/input_list_getbam_align.txt
+input_file=/u/home/c/colinrsm/cfSNV/demo/input_list_getbam_align.txt
 
 ### PATH TO GATK version 3.8.0 (ABSOLUTE PATH TO .jar FILE)
-GATK=/u/home/s/shuoli/code/GenomeAnalysisTK-3.8-0/GenomeAnalysisTK.jar
+GATK=/u/home/c/colinrsm/tools/gatk/GenomeAnalysisTK.jar
 
 ### PATH TO PICARD TOOLS (ABSOLUTE PATH TO .jar FILE)
-picard=/u/home/s/shuoli/code/picard/picard.jar
+picard=/u/home/c/colinrsm/tools/picard/picard.jar
 
 ### PATH TO BWA (ABSOLUTE PATH TO EXECUTABLE FILE)
 bwa=/u/local/apps/bwa/0.7.17/gcc-4.4.7/bwa
@@ -67,7 +68,7 @@ ${java} -Xms1G -jar ${GATK} -T BaseRecalibrator -R ${reference} -I ${file_id}.re
 ${java} -Xms1G -jar ${GATK} -T PrintReads -R ${reference} -I ${file_id}.realignedBam.bam -BQSR ${file_id}.recal_data.table -o ${file_id}.recal.bam
 rm ${file_id}.realignedBam.bam ${file_id}.realignedBam.bai
 
-rm *.intervals *.table *.marked_dup_metrics.txt
+rm *.intervals ${file_id}.recal_data.table *.marked_dup_metrics.txt
 
 duration=${SECONDS}
 if (( ${duration} < 1200 )); then

@@ -1,6 +1,6 @@
 from parameter import *
-from _filter import *
-from _probability import *
+from src.py._filter import *
+from src.py._probability import *
 import numpy as np
 
 # PREPROCESSING WITH PREDEFINED HOTSPOT LIST
@@ -180,8 +180,9 @@ if __name__ == "__main__":
 		select_hotspot(chrom, pos, basestring, quallist, maplist, basestring_normal, quallist_normal, maplist_normal,  basestring_extendedFrags, quallist_extendedFrags, maplist_extendedFrags, basestring_notCombined, quallist_notCombined, maplist_notCombined, basecount_notCombined, basecount_extendedFrags, variant_base)
 	f.close()
 	if len(HOTSPOT) > MAX_NUMBER_OF_HOTSPOT:
-		from operator import itemgetter, attrgetter
-		a = sorted(HOTSPOT, key=itemgetter(0))
+		from operator import itemgetter
+
+        a = sorted(HOTSPOT, key=itemgetter(0))
 		a = sorted(a, key=itemgetter(2), reverse = True)
 		a = sorted(a, key=itemgetter(1))
 		#HOTSPOT_ALL = [i for i in HOTSPOT]

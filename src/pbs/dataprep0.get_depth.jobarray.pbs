@@ -3,7 +3,8 @@
 #$ -cwd
 #$ -j y
 #$ -m a
-#$ -l  h_data=2G,h_rt=24:00:00,h_vmem=8G,highp
+#$ -o log.$JOB_ID.log
+#$ -l  h_data=2G,h_rt=24:00:00,h_vmem=8G
 #$ -t 1-1:1
 
 
@@ -16,7 +17,7 @@ module load anaconda/python2-4.2
 
 
 ### LIST OF INPUT FILES
-input_file=/u/project/xjzhou/shuoli/code/iterative_cfSNV/V8_cleaned/demo/input_list_dataprep0.txt
+input_file=/u/home/c/colinrsm/cfSNV/demo/input_list_dataprep0.txt
 
 ###### PREREQUISITE PACKAGES ######
 ###### Please change these paths
@@ -27,7 +28,7 @@ samtools=/u/local/apps/samtools/1.9/bin/samtools
 python=/u/local/apps/anaconda/python2-4.2.0/bin/python
 
 ### PATH TO cfSNV SOURCE CODES (ABSOLUTE PATH TO THE FOLDER CONTAINING SOURCE CODES)
-cfSNV=/u/project/xjzhou/shuoli/code/iterative_cfSNV/V8_cleaned
+cfSNV=/u/home/c/colinrsm/cfSNV/src
 
 
 ###### MAIN COMMANDS
