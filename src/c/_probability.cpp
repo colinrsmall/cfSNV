@@ -34,7 +34,7 @@ void translate_basestring(std::string & basestring, char & variant_base) {
 std::map<char, double> observeVariantProbability(double tumorFraction, std::string joint_genotype) {
     std::map<char, double> variantAlleleObservedProbability = {};
 
-    // TODO: Consider hasing the string and using a switch statement
+    // TODO: Consider hashing the string and using a switch statement
 
     if(joint_genotype == "AA/AA") {
         variantAlleleObservedProbability['R'] = 1.0;
@@ -120,7 +120,7 @@ std::vector<double> stringToQual(std::string qualityString){
     qualityVector.reserve(qualityString.size());
 
     for(char& c : qualityString){
-        qualityVector.push_back(std::pow(10, (1-(double)(c-33)/10.0)));
+        qualityVector.push_back(std::pow(10, (0-(double)(c-33)/10.0)));
     }
 
     return qualityVector;

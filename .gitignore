@@ -74,3 +74,4 @@ bin/*
 test/test_runner
 
 demo/*
+py2_demo/*

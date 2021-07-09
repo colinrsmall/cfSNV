@@ -49,13 +49,13 @@ void selectHotSpot(std::string chrom, std::string pos, std::string basestring, s
 
     std::vector<double> quallistMerge;
     quallistMerge.reserve(quallistExtendedFrags.size() + quallistNotCombined.size());
-    quallistMerge.insert(quallistMerge.end(), quallistExtendedFrags.begin(), quallistNotCombined.end());
-    quallistMerge.insert(quallistMerge.end(), quallistExtendedFrags.begin(), quallistNotCombined.end());
+    quallistMerge.insert(quallistMerge.end(), quallistExtendedFrags.begin(), quallistExtendedFrags.end());
+    quallistMerge.insert(quallistMerge.end(), quallistNotCombined.begin(), quallistNotCombined.end());
 
     std::vector<double> maplistMerge;
     maplistMerge.reserve(maplistExtendedFrags.size() + maplistNotCombined.size());
     maplistMerge.insert(maplistMerge.end(), maplistExtendedFrags.begin(), maplistExtendedFrags.end());
-    maplistMerge.insert(maplistMerge.end(), maplistExtendedFrags.begin(), maplistExtendedFrags.end());
+    maplistMerge.insert(maplistMerge.end(), maplistNotCombined.begin(), maplistNotCombined.end());
 
     // Require DEPTH_FOR_ESTIMATION fragments
     if ( basestringMerge.size() < DEPTH_FOR_ESTIMATION )
@@ -109,9 +109,9 @@ void selectHotSpot(std::string chrom, std::string pos, std::string basestring, s
     double maplistMean = meanVector(maplistGreaterThanZero);
     double maplistNormalMean = meanVector(maplistNormalGreaterThanZero);
     double maplistMergeMean = meanVector(maplistMergeGreaterThanZero);
-    if ( maplistMean > ZERO_MAPQUAL_COUNT_FOR_ESTIMATION ||
-         maplistNormalMean > ZERO_MAPQUAL_COUNT_FOR_ESTIMATION ||
-         maplistMergeMean > ZERO_MAPQUAL_COUNT_FOR_ESTIMATION )
+    if ( maplistMean > AVG_MAPQUAL_FOR_ESTIMATION ||
+         maplistNormalMean > AVG_MAPQUAL_FOR_ESTIMATION ||
+         maplistMergeMean > AVG_MAPQUAL_FOR_ESTIMATION )
         return;
 
     // Exclude strand bias
@@ -188,15 +188,14 @@ double calculateTumorFractionLikelihood(double tumor_fraction, std::string bases
     return likelihood;
 }
 
-std::tuple<int, std::vector<double>> estimateTumorFraction(std::vector<hotspot> HOTSPOT) {
+std::tuple<double, std::vector<double>> estimateTumorFraction(std::vector<hotspot> HOTSPOT) {
 
-    std::vector<int> ratio;
-    ratio.reserve(MAXSEARCH_WITH_NORMAL);
+    std::vector<double> ratio(MAXSEARCH_WITH_NORMAL, 0);
     for ( int i = 0 ; i < MAXSEARCH_WITH_NORMAL ; i++ ) {
-        ratio[i] = GRIDWIDTH * i;
+        ratio[i] = (double)GRIDWIDTH * i;
     }
 
-    std::vector<double> tumorFractionLikelihood(0, MAXSEARCH_WITH_NORMAL);
+    std::vector<double> tumorFractionLikelihood(MAXSEARCH_WITH_NORMAL, 0);
     for ( int ratioind = 0 ; ratioind < MAXSEARCH_WITH_NORMAL ; ratioind++ ) {
         for ( hotspot spot : HOTSPOT ) {
             std::string basestringMerge = spot.basestringExtendedFrags + spot.basestringNotCombined;
@@ -218,8 +217,21 @@ std::tuple<int, std::vector<double>> estimateTumorFraction(std::vector<hotspot> 
 
     int estind = std::max_element(tumorFractionLikelihood.begin(), tumorFractionLikelihood.end()) -
                  tumorFractionLikelihood.begin();
-    int est = ratio[estind];
-    return std::tuple<int, std::vector<double>>(est, tumorFractionLikelihood);
+    double est = ratio[estind];
+    return std::tuple<double, std::vector<double>>(est, tumorFractionLikelihood);
+}
+
+bool hotsportSortHelper(hotspot a, hotspot b){
+
+    if(a.priora == b.priorb){
+        if(a.priorb == b.priorb){
+            return a.priorc < b.priorc;
+        }
+        else
+            return a.priorb < b.priorb;
+    }
+    else
+        return a.priora < b.priora;
 }
 
 int main(int argc, char *argv[]) {
@@ -239,9 +251,9 @@ int main(int argc, char *argv[]) {
         std::vector<std::string> splitString = split(lineText, "\t");
         std::string chrom = splitString[0];
 
-        if ( chrom.find("X") == std::string::npos ||
-             chrom.find("M") == std::string::npos ||
-             chrom.find("Y") == std::string::npos )
+        if ( chrom.find('X') != std::string::npos or
+             chrom.find('M') != std::string::npos or
+             chrom.find('Y') != std::string::npos )
             continue;
 
         std::string pos = splitString[1];
@@ -302,16 +314,11 @@ int main(int argc, char *argv[]) {
     file.close();
 
     if ( HOTSPOT.size() > MAX_NUMBER_OF_HOTPOST ) {
-//        from operator import itemgetter
-//
-//                a = sorted(HOTSPOT, key=itemgetter(0))
-//        a = sorted(a, key=itemgetter(2), reverse = True)
-//        a = sorted(a, key=itemgetter(1))
-//        HOTSPOT = a[0:MAX_NUMBER_OF_HOTSPOT]
+        std::sort(HOTSPOT.begin(), HOTSPOT.end(), hotsportSortHelper);
     }
 
-    std::tuple<int, std::vector<double>> estTumorFractionLikelihood = estimateTumorFraction(HOTSPOT);
-    int est = std::get<0>(estTumorFractionLikelihood);
+    std::tuple<double, std::vector<double>> estTumorFractionLikelihood = estimateTumorFraction(HOTSPOT);
+    double est = std::get<0>(estTumorFractionLikelihood);
     std::vector<double> tumorFractionLikelihood = std::get<1>(estTumorFractionLikelihood);
 
     std::vector<double> VAF;

@@ -81,8 +81,7 @@ std::vector<T> operator+(const std::vector<T>& a, const std::vector<T>& b)
 {
 //    assert(a.size() == b.size());
 
-    std::vector<T> result;
-    result.reserve(a.size());
+    std::vector<T> result(a.size(), 0);
 
 //    std::transform(a.begin(), a.end(), b.begin(),
 //                   std::back_inserter(result), std::plus<T>());
@@ -99,8 +98,7 @@ std::vector<T> operator-(const std::vector<T>& a, const std::vector<T>& b)
 {
 //    assert(a.size() == b.size());
 
-    std::vector<T> result;
-    result.reserve(a.size());
+    std::vector<T> result(a.size(), 0);
 
 //    std::transform(a.begin(), a.end(), b.begin(),
 //                   std::back_inserter(result), std::minus<T>());
@@ -117,8 +115,7 @@ std::vector<T> operator*(const std::vector<T>& a, const std::vector<T>& b)
 {
 //    assert(a.size() == b.size());
 
-    std::vector<T> result;
-    result.reserve(a.size());
+    std::vector<T> result(a.size(), 0);
 
 //    std::transform(a.begin(), a.end(), b.begin(),
 //                   std::back_inserter(result), std::multiplies<T>());
@@ -132,8 +129,7 @@ std::vector<T> operator*(const std::vector<T>& a, const std::vector<T>& b)
 template <typename T>
 std::vector<T> veclog(const std::vector<T>& a)
 {
-    std::vector<double> loglist;
-    loglist.reserve(a.size());
+    std::vector<double> loglist(a.size(), 0);
 
     for(int i = 0; i < a.size(); i ++){
         loglist[i] = (std::log(a[i]));
