@@ -43,7 +43,7 @@ std::vector<char> accessMultipleIndicesString(std::string str, std::vector<int>&
  * @param comparator The character to be compared to the contents of str.
  * @return A vector of indices.
  */
-std::vector<int> getIndicesWhereEqualFromString(std::string_view str, char comparator){
+std::vector<int> getIndicesWhereEqualFromString(std::string str, char comparator){
     std::vector<int> returnVec = {};
 
     for(int i = 0; i < str.size(); i++){

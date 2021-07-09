@@ -153,7 +153,7 @@ std::vector<std::string> split(const std::string& s, const std::string& delimite
 
 std::string toUpper(std::string s);
 
-std::vector<int> getIndicesWhereEqualFromString(std::string_view str, char comparator);
+std::vector<int> getIndicesWhereEqualFromString(std::string str, char comparator);
 std::vector<char> accessMultipleIndicesString(std::string str, std::vector<int>& indices);
 
 

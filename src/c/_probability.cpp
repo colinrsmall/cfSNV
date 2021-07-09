@@ -14,7 +14,7 @@ double binomialPMF(int k, int n, double p){
     return binomialCoefficient * std::pow(p, k) * std::pow(1-p, n-k);
 }
 
-std::map<char, int> countBase(std::string_view basestring) {
+std::map<char, int> countBase(std::string basestring) {
     std::map<char, int> basecount = {{'A',0}, {'a',0}, {'C',0}, {'c',0}, {'G',0}, {'g',0}, {'T',0}, {'t',0}, {'R',0}, {'r',0}};
 
     for(char c: basestring){

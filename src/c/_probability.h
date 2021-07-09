@@ -16,7 +16,7 @@
 #include "_helper.h"
 
 
-std::map<char, int> countBase(std::string_view basestring);
+std::map<char, int> countBase(std::string basestring);
 
 
 /**
