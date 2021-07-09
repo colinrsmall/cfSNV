@@ -12,7 +12,7 @@ def string_to_qual(qualitystring):
 # input: a qual string
 # output: a list of error probabilities
 # qual is the phred score of error probability
-	prob = np.array([10.0**(-float(ord(i)-33)/10.0) for i in qualitystring])
+	prob = np.array([10.0**(-double(ord(i)-33)/10.0) for i in qualitystring])
 	return prob
 
 
@@ -109,7 +109,7 @@ def count_base(basestring):
 
 
 def convert_to_Decimal(x):
-# input: integer or float
+# input: integer or double
 # output: decimal object
 	return Decimal(str(x))
 

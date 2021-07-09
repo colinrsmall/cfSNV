@@ -45,20 +45,20 @@ def select_hotspot(chrom, pos, basestring, quallist, maplist, basestring_normal,
     if len(basestring) == 0 or len(basestring_merge) == 0 or len(basestring_normal) == 0:
         return
     cnt_non_ref_read = sum([1 for i in basestring.upper() if i == variant_base])
-    mean_qual = float(sum(quallist))/float(len(quallist))
-    if float(cnt_non_ref_read) < mean_qual*float(len(basestring)):
+    mean_qual = double(sum(quallist))/double(len(quallist))
+    if double(cnt_non_ref_read) < mean_qual*double(len(basestring)):
         return
     cnt_non_ref_read_merge = sum([1 for i in basestring_merge if i.upper() == variant_base])
     mean_qual_merge = np.mean(quallist_merge)
-    if float(cnt_non_ref_read_merge) < mean_qual_merge*float(len(basestring_merge)):
+    if double(cnt_non_ref_read_merge) < mean_qual_merge*double(len(basestring_merge)):
         return
     # merged VAF lower than threshold
     cnt_var_read_merge = sum([1 for i in basestring_merge if i.upper() == variant_base])
-    if float(cnt_var_read_merge)/float(len(basestring_merge)) > MERGED_VAF_THRESHOLD:
+    if double(cnt_var_read_merge)/double(len(basestring_merge)) > MERGED_VAF_THRESHOLD:
         return
     # exclude possible germline variants
     cnt_var_normal_read = sum([1 for i in basestring_normal if i.upper() == variant_base])
-    if float(cnt_var_normal_read)/float(len(basestring_normal)) > GERMLINE_VAF_THRESHOLD_IN_NORMAL:
+    if double(cnt_var_normal_read)/double(len(basestring_normal)) > GERMLINE_VAF_THRESHOLD_IN_NORMAL:
         return
     # require high mapping quality in both tumor and normal
     if sum(maplist == 0) > ZERO_MAPQUAL_COUNT_FOR_ESTIMATION or sum(maplist_normal == 0) > ZERO_MAPQUAL_COUNT_FOR_ESTIMATION or sum(maplist_merge == 0) > ZERO_MAPQUAL_COUNT_FOR_ESTIMATION:
@@ -78,7 +78,7 @@ def select_hotspot(chrom, pos, basestring, quallist, maplist, basestring_normal,
         return
     if strand_bias_unmerge != "T" or both_observed_unmerge != "T" or above_average_unmerge != "T" or supporting_read_count_unmerge != "T" :
         return
-    HOTSPOT.append((mean_qual_merge, cnt_var_normal_read, float(cnt_var_read_merge)/float(len(basestring_merge)), chrom, pos, basestring, quallist, maplist, basestring_normal, quallist_normal, maplist_normal,  basestring_extendedFrags, quallist_extendedFrags, maplist_extendedFrags, basestring_notCombined, quallist_notCombined, maplist_notCombined, variant_base))
+    HOTSPOT.append((mean_qual_merge, cnt_var_normal_read, double(cnt_var_read_merge)/double(len(basestring_merge)), chrom, pos, basestring, quallist, maplist, basestring_normal, quallist_normal, maplist_normal,  basestring_extendedFrags, quallist_extendedFrags, maplist_extendedFrags, basestring_notCombined, quallist_notCombined, maplist_notCombined, variant_base))
     return
 
 
@@ -121,7 +121,7 @@ def estimate_tumor_fraction(HOTSPOT):
     # tumor fraction is estimated with maximum likelihood
     ratio = [GRIDWIDTH * i for i in range(MAXSEARCH_WITH_NORMAL)]
     global tumor_fraction_likelihood
-    tumor_fraction_likelihood = multiprocessing.Array('f', [float(0)]*MAXSEARCH_WITH_NORMAL)
+    tumor_fraction_likelihood = multiprocessing.Array('f', [double(0)]*MAXSEARCH_WITH_NORMAL)
 
     with concurrent.futures.ProcessPoolExecutor() as executor:
         futures = [executor.submit(worker, HOTSPOT, ratio, ratioind) for ratioind in range(MAXSEARCH_WITH_NORMAL)]
@@ -135,9 +135,9 @@ def estimate_tumor_fraction(HOTSPOT):
 
 if __name__ == "__main__":
     filename = sys.argv[1]
-    MERGED_VAF_THRESHOLD = float(sys.argv[2])
+    MERGED_VAF_THRESHOLD = double(sys.argv[2])
     file_prefix = sys.argv[3]
-    depth = float(sys.argv[4])
+    depth = double(sys.argv[4])
     VAF_output = sys.argv[5]
     estimate_output = sys.argv[6]
     GERMLINE_VARIANT_COUNT = get_germline_variant_count_threshold(depth)
@@ -202,7 +202,7 @@ if __name__ == "__main__":
     #	print est
     VAF = []
     for i in HOTSPOT:
-        vaf = sum([1.0 for j in i[11]+i[14] if j.upper() == i[17]])/float(len(i[11]+i[14]))
+        vaf = sum([1.0 for j in i[11]+i[14] if j.upper() == i[17]])/double(len(i[11]+i[14]))
         VAF.append(vaf)
     VAF.sort()
     VAF

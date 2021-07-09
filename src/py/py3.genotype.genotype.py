@@ -114,9 +114,9 @@ def call_variants(finput, foutput_call, tumor_fraction):
 		cnt_var_tumor = basestring.upper().count(variant_base)
 		cnt_var_tumor_merge = basestring_merge.upper().count(variant_base)
 		cnt_var_normal = basestring_normal.upper().count(variant_base)
-		VAF_tumor_merge = float(cnt_var_tumor_merge)/float(len(basestring_merge))
-		VAF_tumor = float(cnt_var_tumor)/float(len(basestring))
-		VAF_normal = float(cnt_var_normal)/float(len(basestring_normal))
+		VAF_tumor_merge = double(cnt_var_tumor_merge)/double(len(basestring_merge))
+		VAF_tumor = double(cnt_var_tumor)/double(len(basestring))
+		VAF_normal = double(cnt_var_normal)/double(len(basestring_normal))
 		cnt_alt_normal = sum([1 for i in basestring_normal.upper() if i != 'R'])
 		cnt_normal = len(basestring_normal)
 		#print VAF_normal, cnt_var_normal
@@ -149,9 +149,9 @@ def call_variants(finput, foutput_call, tumor_fraction):
 if __name__ == "__main__":
 	finput = sys.argv[1]
 	foutput_call = sys.argv[2]
-	tumor_fraction = float(sys.argv[3])
-	MERGED_VAF_THRESHOLD = float(sys.argv[4])
-	depth = float(sys.argv[5])
+	tumor_fraction = double(sys.argv[3])
+	MERGED_VAF_THRESHOLD = double(sys.argv[4])
+	depth = double(sys.argv[5])
 	GENOTYPE_THRESHOLD = MERGED_VAF_THRESHOLD * 1.2
 	GERMLINE_VARIANT_COUNT = get_germline_variant_count_threshold(depth)
 	NORMAL_COUNT_BINOM = get_normal_count_binom_threshold(depth)

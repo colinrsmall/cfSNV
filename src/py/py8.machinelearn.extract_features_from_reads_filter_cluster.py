@@ -582,7 +582,7 @@ for item in matrix:
 			if abs(pos_else - pos) < 3:
 				continue
 			cnt_cooccur = co_matrix[i_var_main][i_var_else]
-			if float(cnt_cooccur)/float(cnt_var_main) > CLUSTERED_FRAC and (cnt_var_main - cnt_cooccur) < NONCLUSTERED_COUNT:
+			if double(cnt_cooccur)/double(cnt_var_main) > CLUSTERED_FRAC and (cnt_var_main - cnt_cooccur) < NONCLUSTERED_COUNT:
 				flag = 1
 		if flag == 1:
 			clustered_variants.append(var_list[i_var_main])

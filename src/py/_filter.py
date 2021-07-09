@@ -36,7 +36,7 @@ def filter_triallelic_position(basecount, var, depth):
 	total_count = sum(basecount.values())
 	if total_count == 0:
 		print total_count, var_count, basecount, var
-	var_VAF = float(var_count)/float(total_count)
+	var_VAF = double(var_count)/double(total_count)
 	TRIALLELE_COUNT = int(math.log10(depth)) + 2
 	other_count = 0
 	other_VAF = 0
@@ -46,7 +46,7 @@ def filter_triallelic_position(basecount, var, depth):
 		tmp_count = basecount[i] + basecount[i.lower()]
 		if tmp_count > other_count:
 			other_count = tmp_count
-	other_VAF = float(other_count)/float(total_count)
+	other_VAF = double(other_count)/double(total_count)
 	if var_count == 0 or other_VAF/var_VAF > TRIALLELE_VAF_RATIO:
 #		print basecount, var
 		return "F"
@@ -73,10 +73,10 @@ def filter_strand_bias_merge(basecount_nc, basecount_ef, var):
 	if reverse_var == 0 and reverse == 0:
 		return "T"
 	elif reverse_var == 0 and reverse != 0:
-		var_ratio = float(reverse_var)/float(forward_var)
-		ratio = float(reverse)/float(forward)
-#		print "merge reverse var 0", binom.pmf(forward_var, forward_var + reverse_var, float(forward)/(float(forward)+float(reverse))), reverse, forward, reverse_var, forward_var
-		if binom.pmf(forward_var, forward_var + reverse_var, float(forward)/(float(forward)+float(reverse))) < STRAND_BIAS_BINOMIAL_PROB:
+		var_ratio = double(reverse_var)/double(forward_var)
+		ratio = double(reverse)/double(forward)
+#		print "merge reverse var 0", binom.pmf(forward_var, forward_var + reverse_var, double(forward)/(double(forward)+double(reverse))), reverse, forward, reverse_var, forward_var
+		if binom.pmf(forward_var, forward_var + reverse_var, double(forward)/(double(forward)+double(reverse))) < STRAND_BIAS_BINOMIAL_PROB:
 			return "F"
 		else:
 			return "T" 
@@ -87,10 +87,10 @@ def filter_strand_bias_merge(basecount_nc, basecount_ef, var):
 	elif forward_var == 0 and forward == 0:
 		return "T"
 	elif forward_var == 0 and forward != 0:
-		var_ratio = float(forward_var)/float(reverse_var)
-		ratio = float(forward)/float(reverse)
-#		print "merge forward var 0", binom.pmf(reverse_var, forward_var + reverse_var, float(reverse)/(float(forward)+float(reverse))), reverse, forward, reverse_var, forward_var
-		if binom.pmf(reverse_var, forward_var + reverse_var, float(reverse)/(float(forward)+float(reverse))) < STRAND_BIAS_BINOMIAL_PROB:
+		var_ratio = double(forward_var)/double(reverse_var)
+		ratio = double(forward)/double(reverse)
+#		print "merge forward var 0", binom.pmf(reverse_var, forward_var + reverse_var, double(reverse)/(double(forward)+double(reverse))), reverse, forward, reverse_var, forward_var
+		if binom.pmf(reverse_var, forward_var + reverse_var, double(reverse)/(double(forward)+double(reverse))) < STRAND_BIAS_BINOMIAL_PROB:
 			return "F"
 		else:
 			return "T"
@@ -99,8 +99,8 @@ def filter_strand_bias_merge(basecount_nc, basecount_ef, var):
 #		else:
 #			return "T"
 	else:
-		var_ratio = float(forward_var)/float(reverse_var)
-		ratio = float(forward)/float(reverse)
+		var_ratio = double(forward_var)/double(reverse_var)
+		ratio = double(forward)/double(reverse)
 		if var_ratio/ratio > STRAND_BIAS_RATIO_VARIANT_TO_ALL or ratio/var_ratio > STRAND_BIAS_RATIO_VARIANT_TO_ALL:
 			return "F"
 		else:
@@ -150,14 +150,14 @@ def filter_strand_bias_unmerge(basecount, var):
 	if reverse_var == 0 and reverse == 0:
 		return "T"
 	elif reverse_var == 0 and reverse != 0:
-		var_ratio = float(reverse_var)/float(forward_var)
-		ratio = float(reverse)/float(forward)
-#		print "unmerge reverse var 0", binom.pmf(forward_var, forward_var + reverse_var, float(forward)/(float(forward)+float(reverse))), reverse, forward, reverse_var, forward_var
-		if binom.pmf(forward_var, forward_var + reverse_var, float(forward)/(float(forward)+float(reverse))) < STRAND_BIAS_BINOMIAL_PROB:
+		var_ratio = double(reverse_var)/double(forward_var)
+		ratio = double(reverse)/double(forward)
+#		print "unmerge reverse var 0", binom.pmf(forward_var, forward_var + reverse_var, double(forward)/(double(forward)+double(reverse))), reverse, forward, reverse_var, forward_var
+		if binom.pmf(forward_var, forward_var + reverse_var, double(forward)/(double(forward)+double(reverse))) < STRAND_BIAS_BINOMIAL_PROB:
                         return "F"
                 else:
                         return "T"
-		if binom.cdf(reverse_var, forward_var + reverse_var, float(reverse)/(float(forward)+float(reverse))) < STRAND_BIAS_BINOMIAL_PROB:
+		if binom.cdf(reverse_var, forward_var + reverse_var, double(reverse)/(double(forward)+double(reverse))) < STRAND_BIAS_BINOMIAL_PROB:
 			return "F"
 		else:
 			return "T"
@@ -168,14 +168,14 @@ def filter_strand_bias_unmerge(basecount, var):
 	elif forward_var == 0 and forward == 0:
 		return "T"
 	elif forward_var == 0 and forward != 0:
-		var_ratio = float(forward_var)/float(reverse_var)
-		ratio = float(forward)/float(reverse)
-#		print "unmerge forward var 0", binom.pmf(reverse_var, forward_var + reverse_var, float(reverse)/(float(forward)+float(reverse))), reverse, forward, reverse_var, forward_var
-		if binom.pmf(reverse_var, forward_var + reverse_var, float(reverse)/(float(forward)+float(reverse))) < STRAND_BIAS_BINOMIAL_PROB:
+		var_ratio = double(forward_var)/double(reverse_var)
+		ratio = double(forward)/double(reverse)
+#		print "unmerge forward var 0", binom.pmf(reverse_var, forward_var + reverse_var, double(reverse)/(double(forward)+double(reverse))), reverse, forward, reverse_var, forward_var
+		if binom.pmf(reverse_var, forward_var + reverse_var, double(reverse)/(double(forward)+double(reverse))) < STRAND_BIAS_BINOMIAL_PROB:
                         return "F"
                 else:
                         return "T"
-		if binom.cdf(forward_var, forward_var + reverse_var, float(forward)/(float(forward)+float(reverse))) < STRAND_BIAS_BINOMIAL_PROB:
+		if binom.cdf(forward_var, forward_var + reverse_var, double(forward)/(double(forward)+double(reverse))) < STRAND_BIAS_BINOMIAL_PROB:
 			return "F"
 		else:
 			return "T"
@@ -184,8 +184,8 @@ def filter_strand_bias_unmerge(basecount, var):
 #		else:
 #			return "T"
 	else:
-		var_ratio = float(forward_var)/float(reverse_var)
-		ratio = float(forward)/float(reverse)
+		var_ratio = double(forward_var)/double(reverse_var)
+		ratio = double(forward)/double(reverse)
 	#	print forward_var, reverse_var, forward, reverse, var_ratio, ratio
 		if var_ratio/ratio > STRAND_BIAS_RATIO_VARIANT_TO_ALL or ratio/var_ratio > STRAND_BIAS_RATIO_VARIANT_TO_ALL:
 			return "F"
@@ -332,15 +332,15 @@ def final_estimation_with_Jenks(VAF_list):
 	if len(VAF_list) == 0:
 		return 0.0, 0, 0
 	if len(VAF_list) < 20:
-		return sum(VAF_list)/float(len(VAF_list)), len(VAF_list), 0
+		return sum(VAF_list)/double(len(VAF_list)), len(VAF_list), 0
 	tmp1 = 0
 	max_iter_lim = 10
 	min_iter_lim = 3
-	max_iter_x_lim = int(round(float(len(VAF_list))/20.0))
+	max_iter_x_lim = int(round(double(len(VAF_list))/20.0))
 	max_lim = max(min_iter_lim, min(max_iter_lim, max_iter_x_lim)) + 1
 	for ct in range(min_iter_lim, max_lim):
 		groups, breaks = jenks(VAF_list, ct)
-		tmp2 = float(sum(groups[len(groups)-1]))/len(groups[len(groups)-1])
+		tmp2 = double(sum(groups[len(groups)-1]))/len(groups[len(groups)-1])
 		if tmp1 == tmp2:
 			break
 		else:
@@ -355,7 +355,7 @@ def final_estimation_with_Jenks(VAF_list):
 			break
 	if len(include) > VARIANT_COUNT_FOR_JENK_ESTIMATION:
 		include = include[0:VARIANT_COUNT_FOR_JENK_ESTIMATION]
-	return float(sum(include))/len(include), len(include), n
+	return double(sum(include))/len(include), len(include), n
 
 
 def filter_supporting_count_by_binomial_test(jenks_estimate, basestring, variant_base):

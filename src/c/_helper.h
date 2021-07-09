@@ -5,6 +5,18 @@
 #ifndef CFSNV__HELPER_H
 #define CFSNV__HELPER_H
 
+#include <cmath>
+
+template <class C>
+int sumMap(std::map<C, int> m){
+    int sum = 0;
+    typename std::map<C, int>::iterator it;
+    for(it = m.begin(); it != m.end(); it++){
+        sum += it->second;
+    }
+    return sum;
+}
+
 /**
  * Helper function to return multiple items from a vector given a list of indices to access.
  * @param vec The vector to access.
@@ -12,7 +24,7 @@
  * @return A new vector containing only the elements at the specified indices.
  */
 template <class T>
-std::vector<T> accessMultipleIndicesVector(std::vector<T>& vec, std::vector<int>& indices)
+std::vector<T> accessMultipleIndicesVector(std::vector<T>& vec, std::vector<int> indices)
 {
 //    // Make sure indices isn't larger than the array
 //    assert(vec.size() >= indices.size());
@@ -38,12 +50,25 @@ std::vector<T> accessMultipleIndicesVector(std::vector<T>& vec, std::vector<int>
  * @return
  */
 template <class T>
-std::vector<T> getIndicesWhereEqualFromVector(std::vector<T>& vec, T& comparator){
+std::vector<int> getIndicesWhereEqualFromVector(std::vector<T>& vec, T comparator){
 
     std::vector<int> returnVec = {};
 
     for(int i = 0; i < vec.size(); i++){
         if (vec[i] == comparator)
+            returnVec.push_back(i);
+    }
+
+    return returnVec;
+}
+
+template <class T>
+std::vector<int> getIndicesWhereGreaterThan(std::vector<T>& vec, T comparator){
+
+    std::vector<int> returnVec = {};
+
+    for(int i = 0; i < vec.size(); i++){
+        if (vec[i] > comparator)
             returnVec.push_back(i);
     }
 
@@ -116,6 +141,21 @@ std::vector<T> veclog(const std::vector<T>& a)
     return loglist;
 }
 
+template <class T>
+bool vecContains(std::vector<T> vec, T t){
+    return std::find(vec.begin(), vec.end(), t) != vec.end();
+}
+
+
+double sumVector(const std::vector<double>& vec);
+
+double meanVector(const std::vector<double>& vec);
+
+int factorial(int n);
+
+std::vector<std::string> split(const std::string& s, const std::string& delimiter);
+
+std::string toUpper(std::string s);
 
 std::vector<int> getIndicesWhereEqualFromString(std::string_view str, char comparator);
 std::vector<char> accessMultipleIndicesString(std::string str, std::vector<int>& indices);

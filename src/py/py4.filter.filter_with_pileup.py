@@ -11,8 +11,8 @@ def generate_intermediate_result_one_line(line):
 	pos = sp[1]
 	#print chrom, pos
 	variant_base = sp[9]
-	VAF_merge = float(sp[14])
-	VAF = float(sp[11])
+	VAF_merge = double(sp[14])
+	VAF = double(sp[11])
 	joint_genotype = sp[10]
 	joint_genotype_merge = sp[13]
 	basestring = sp[16]
@@ -193,7 +193,7 @@ if __name__ == "__main__":
 	fTF = sys.argv[6]
 	MERGED_VAF_THRESHOLD = sys.argv[7]
 	SNP_database = sys.argv[8]
-	depth = float(sys.argv[9])
+	depth = double(sys.argv[9])
 	VAF_list = generate_intermediate_result_whole_file(finput, fintermediate, SNP_database)
 	jenks_estimate, include_number, include_group = final_estimation_with_Jenks(VAF_list)
 	n = generate_record_and_output_whole_file(fintermediate, foutput_pass, foutput_check, frecord, jenks_estimate)

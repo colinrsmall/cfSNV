@@ -3,7 +3,7 @@
 import json
 from pprint import pprint as pp
 
-inf = float('inf')
+inf = double('inf')
 
 def jenks_init_matrices(data, n_classes):
     #where N = len(data) and K = len(n_classes)+1
