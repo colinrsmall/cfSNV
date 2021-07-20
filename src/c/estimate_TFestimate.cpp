@@ -332,16 +332,17 @@ int main(int argc, char *argv[]) {
     }
     std::sort(VAF.begin(), VAF.end());
 
+
     std::ofstream vafOutputFile(VAF_output);
     for ( double & vaf : VAF )
-        vafOutputFile << vaf << '\n';
+        vafOutputFile << std::fixed << std::setprecision(12) << vaf << '\n';
     vafOutputFile.close();
 
     std::ofstream estimateOutputFile(estimate_output);
     estimateOutputFile << est << '\n';
     estimateOutputFile << "====================" << '\n';
     for ( double & tfl : tumorFractionLikelihood )
-        estimateOutputFile << tfl << '\n';
+        estimateOutputFile << std::fixed << std::setprecision(28) << tfl << '\n';
     estimateOutputFile.close();
     return 0;
 }
