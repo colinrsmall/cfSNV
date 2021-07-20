@@ -4,7 +4,7 @@
 
 #include <vector>
 #include <string>
-#include <cmath>
+#include <algorithm>
 
 
 int factorial(int n){
@@ -23,9 +23,9 @@ int factorial(int n){
 std::vector<char> accessMultipleIndicesString(std::string str, std::vector<int>& indices)
 {
     // Make sure indices isn't larger than the array
-    assert(str.size() >= indices.size());
-    // Make sure max index in indices isn't larger than length of array
-    assert(*std::max_element(indices.begin(), indices.end()) < str.size());
+//    assert(str.size() >= indices.size());
+//    // Make sure max index in indices isn't larger than length of array
+//    assert(*std::max_element(indices.begin(), indices.end()) < str.size());
 
     std::vector<char> returnVec = {};
     returnVec.reserve(indices.size());
