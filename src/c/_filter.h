@@ -28,4 +28,6 @@ int getGermlineVariantCountThreshold(double depth);
 char findMajorVariant(std::map<char, int> & basecountNC, std::map<char, int> & basecountOF);
 
 char filterTriallelicPosition(std::map<char, int> basecount, char var, int depth);
+
+double getNormalCountBinomThreshold(double depth);
 #endif //CFSNV__FILTER_H

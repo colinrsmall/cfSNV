@@ -23,3 +23,4 @@ std::map<std::string, double> PRIOR = {
 
 int GERMLINE_VARIANT_COUNT = 2;
 double TRIALLELE_COUNT = 4;
+double NORMAL_COUNT_BINOM = 0.05;

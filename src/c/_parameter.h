@@ -59,7 +59,7 @@ const std::map<std::string, double> EST_PRIOR = {
 const int NORMAL_COUNT_ALT = 7;
 const int NORMAL_COUNT_VAR = 2;
 const double SOMATIC_VAF_THRESHOLD_IN_NORMAL = 0.12;
-const double NORMAL_COUNT_BINOM = 0.05;
+extern double NORMAL_COUNT_BINOM;
 const int NORMAL_COUNT_FOR_VAF_THRESHOLD = 50;
 const int DEPTH_FOR_DETECTION_NORMAL = 4;
 const int DEPTH_FOR_DETECTION_TUMOR = 4;

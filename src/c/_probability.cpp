@@ -78,13 +78,12 @@ std::map<char, double> observeVariantProbability(double tumorFraction, std::stri
     return variantAlleleObservedProbability;
 }
 
-double calculate_joint_genotype_tumor_fraction_loglikelihood(double tumor_fraction,
-                                                             std::string& basestring,
-                                                             std::vector<double>& quallist,
-                                                             std::vector<double>& maplist,
-                                                             std::string& joint_genotype,
-                                                             char& variant_base) {
-    translate_basestring(basestring, variant_base);
+double calculateJointGenotypeTumorFractionLoglikelihood(double tumor_fraction,
+                                                        std::string& basestring,
+                                                        std::vector<double>& quallist,
+                                                        std::vector<double>& maplist,
+                                                        std::string& joint_genotype,
+                                                        char& variant_base) {
     translate_basestring(basestring, variant_base);
     std::vector<int> rBasestringInterestIndices = getIndicesWhereEqualFromString(basestring, 'R');
     std::vector<int> xBasestringInterestIndices = getIndicesWhereEqualFromString(basestring, 'X');

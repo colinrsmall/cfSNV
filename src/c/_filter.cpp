@@ -162,3 +162,10 @@ char filterTriallelicPosition(std::map<char, int> basecount, char var, int depth
         return 'F';
     return 'T';
 }
+
+double getNormalCountBinomThreshold(double depth){
+    if(depth < 1000)
+        return 0.05;
+    else
+        return 0.2;
+}

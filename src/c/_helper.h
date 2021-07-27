@@ -7,6 +7,7 @@
 
 #include <cmath>
 
+
 template <class C>
 int sumMap(std::map<C, int> m){
     int sum = 0;
@@ -157,4 +158,42 @@ std::vector<int> getIndicesWhereEqualFromString(std::string str, char comparator
 std::vector<char> accessMultipleIndicesString(std::string str, std::vector<int>& indices);
 
 
+// From https://stackoverflow.com/questions/216823/whats-the-best-way-to-trim-stdstring?page=1&tab=votes#tab-top
+// trim from start (in place)
+// trim from end (in place)
+static inline void ltrim(std::string &s) {
+    s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) {
+        return !std::isspace(ch);
+    }));
+}
+
+inline void rtrim(std::string &s) {
+    s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) {
+        return !std::isspace(ch);
+    }).base(), s.end());
+}
+
+// trim from both ends (in place)
+inline void trim(std::string &s) {
+    ltrim(s);
+    rtrim(s);
+}
+
+// trim from start (copying)
+inline std::string ltrim_copy(std::string s) {
+    ltrim(s);
+    return s;
+}
+
+// trim from end (copying)
+inline std::string rtrim_copy(std::string s) {
+    rtrim(s);
+    return s;
+}
+
+// trim from both ends (copying)
+inline std::string trim_copy(std::string s) {
+    trim(s);
+    return s;
+}
 #endif //CFSNV__HELPER_H

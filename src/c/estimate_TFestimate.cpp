@@ -179,10 +179,10 @@ double calculateTumorFractionLikelihood(double tumor_fraction, std::string bases
     for ( it = PRIOR.begin() ; it != PRIOR.end() ; it++ ) {
         index = it->first;
         loglikelihood =
-                calculate_joint_genotype_tumor_fraction_loglikelihood(tumor_fraction, basestring_merge, quallist_merge,
-                                                                      maplist_merge, index, variant_base) +
-                calculate_joint_genotype_tumor_fraction_loglikelihood(0.0, basestring_normal, quallist_normal,
-                                                                      maplist_normal, index, variant_base);
+                calculateJointGenotypeTumorFractionLoglikelihood(tumor_fraction, basestring_merge, quallist_merge,
+                                                                 maplist_merge, index, variant_base) +
+                        calculateJointGenotypeTumorFractionLoglikelihood(0.0, basestring_normal, quallist_normal,
+                                                                         maplist_normal, index, variant_base);
         likelihood += exp(loglikelihood + std::log(EST_PRIOR.find(index)->second));
     }
     return likelihood;
@@ -199,11 +199,11 @@ std::tuple<double, std::vector<double>> estimateTumorFraction(std::vector<hotspo
     for ( int ratioind = 0 ; ratioind < MAXSEARCH_WITH_NORMAL ; ratioind++ ) {
         for ( hotspot spot : HOTSPOT ) {
             std::string basestringMerge = spot.basestringExtendedFrags + spot.basestringNotCombined;
-            std::vector<double> quallistMerge = spot.quallistExtendedFrags;
-            quallistMerge.insert(quallistMerge.begin(), spot.quallistNotCombined.begin(),
-                                 spot.quallistNotCombined.end());
-            std::vector<double> maplistMerge = spot.maplistExtendedFrags;
-            maplistMerge.insert(maplistMerge.begin(), spot.maplistNotCombined.begin(), spot.maplistNotCombined.end());
+            std::vector<double> quallistMerge = spot.quallistNotCombined;
+            quallistMerge.insert(quallistMerge.begin(), spot.quallistExtendedFrags.begin(),
+                                 spot.quallistExtendedFrags.end());
+            std::vector<double> maplistMerge = spot.maplistNotCombined;
+            maplistMerge.insert(maplistMerge.begin(), spot.maplistExtendedFrags.begin(), spot.maplistExtendedFrags.end());
 
             double likelihood = calculateTumorFractionLikelihood(ratio[ratioind], basestringMerge, quallistMerge,
                                                                  maplistMerge, spot.basestringNormal,

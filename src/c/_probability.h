@@ -34,12 +34,12 @@ std::map<char, double> observeVariantProbability(double tumorFraction, std::stri
 
 
 
-double calculate_joint_genotype_tumor_fraction_loglikelihood(double tumor_fraction,
-                                                             std::string& basestring,
-                                                             std::vector<double>& quallist,
-                                                             std::vector<double>& maplist,
-                                                             std::string& joint_genotype,
-                                                             char& variant_base
+double calculateJointGenotypeTumorFractionLoglikelihood(double tumor_fraction,
+                                                        std::string& basestring,
+                                                        std::vector<double>& quallist,
+                                                        std::vector<double>& maplist,
+                                                        std::string& joint_genotype,
+                                                        char& variant_base
 );
 
 double binomialPMF(int k, int n, double p);

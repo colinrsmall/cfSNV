@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <cctype>
 
 
 int factorial(int n){
@@ -87,3 +88,42 @@ std::vector<std::string> split(const std::string& s, const std::string& delimite
 double meanVector(const std::vector<double>& vec){
     return sumVector(vec) / (double)vec.size();
 }
+
+// From https://stackoverflow.com/questions/216823/whats-the-best-way-to-trim-stdstring?page=1&tab=votes#tab-top
+// trim from start (in place)
+//static inline void ltrim(std::string &s) {
+//    s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) {
+//        return !std::isspace(ch);
+//    }));
+//}
+
+//// trim from end (in place)
+//inline void rtrim(std::string &s) {
+//    s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) {
+//        return !std::isspace(ch);
+//    }).base(), s.end());
+//}
+//
+//// trim from both ends (in place)
+//inline void trim(std::string &s) {
+//    ltrim(s);
+//    rtrim(s);
+//}
+//
+//// trim from start (copying)
+//inline std::string ltrim_copy(std::string s) {
+//    ltrim(s);
+//    return s;
+//}
+//
+//// trim from end (copying)
+//inline std::string rtrim_copy(std::string s) {
+//    rtrim(s);
+//    return s;
+//}
+//
+//// trim from both ends (copying)
+//inline std::string trim_copy(std::string s) {
+//    trim(s);
+//    return s;
+//}
