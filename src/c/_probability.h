@@ -44,6 +44,8 @@ double calculateJointGenotypeTumorFractionLoglikelihood(double tumor_fraction,
 
 double binomialPMF(int k, int n, double p);
 
+double binomialCDF(int k, int n, double p);
+
 std::vector<double> stringToQual(std::string qualityString);
 
 

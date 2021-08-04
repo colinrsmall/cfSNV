@@ -14,6 +14,16 @@ double binomialPMF(int k, int n, double p){
     return binomialCoefficient * std::pow(p, k) * std::pow(1-p, n-k);
 }
 
+double binomialCDF(int k, int n, double p){
+    double cdf = 0;
+
+    for(int i = 0; i < k+1; i++){
+        double binomialCoefficient = factorial(n) / (factorial(i) * factorial(n-i));
+        cdf += binomialCoefficient * std::pow(p, i) * std::pow(1-p, n-i);
+    }
+    return (double) cdf;
+}
+
 std::map<char, int> countBase(std::string basestring) {
     std::map<char, int> basecount = {{'A',0}, {'a',0}, {'C',0}, {'c',0}, {'G',0}, {'g',0}, {'T',0}, {'t',0}, {'R',0}, {'r',0}};
 
@@ -57,7 +67,7 @@ std::map<char, double> observeVariantProbability(double tumorFraction, std::stri
         variantAlleleObservedProbability['X'] = 0.5;
     }
     else if(joint_genotype == "AB/BB") {
-        variantAlleleObservedProbability['R'] = 0.5 - 0.5 + tumorFraction;
+        variantAlleleObservedProbability['R'] = 0.5 - 0.5 * tumorFraction;
         variantAlleleObservedProbability['X'] = 0.5 + 0.5 * tumorFraction;
     }
     else if(joint_genotype == "BB/AA") {
@@ -119,7 +129,8 @@ std::vector<double> stringToQual(std::string qualityString){
     qualityVector.reserve(qualityString.size());
 
     for(char& c : qualityString){
-        qualityVector.push_back(std::pow(10, (0-(double)(c-33)/10.0)));
+        double y = (0-((double)c-33.0)/10.0);
+        qualityVector.push_back(std::pow(10.0, y));
     }
 
     return qualityVector;

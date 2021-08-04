@@ -17,9 +17,13 @@ set(CMAKE_VERBOSE_MAKEFILE 1)
 #target_include_directories(helper PUBLIC c)
 
 add_executable(tfEstimate
-        c/_probability.cpp
-        c/_helper.h
-        c/_helper.cpp c/estimate_TFestimate.cpp c/estimate_TFestimate.h c/_parameter.h c/hotspot.cpp c/hotspot.h c/_probability.h c/_filter.cpp c/_filter.h c/_parameter.cpp)
+        c/_probability.h c/_probability.cpp
+        c/_helper.h c/_helper.cpp
+        c/_parameter.h c/_parameter.cpp
+        c/hotspot.h c/hotspot.cpp
+        c/_filter.h c/_filter.cpp
+        c/_jenks.h c/_jenks.cpp
+        c/estimate_TFestimate.h c/estimate_TFestimate.cpp)
 
 add_executable(genotype
         c/_probability c/_probability.cpp
@@ -27,4 +31,14 @@ add_executable(genotype
         c/_parameter.h c/_parameter.cpp
         c/hotspot.h c/hotspot.cpp
         c/_filter.h c/_filter.cpp
+        c/_jenks.h c/_jenks.cpp
         c/genotype.genotype.h c/genotype.genotype.cpp)
+
+add_executable(filterWithPileup
+        c/_probability c/_probability.cpp
+        c/_helper.h c/_helper.cpp
+        c/_parameter.h c/_parameter.cpp
+        c/hotspot.h c/hotspot.cpp
+        c/_filter.h c/_filter.cpp
+        c/_jenks.h c/_jenks.cpp
+        c/filter_with_pileup.h c/filter_with_pileup.cpp)

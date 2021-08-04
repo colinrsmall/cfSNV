@@ -47,7 +47,7 @@ double calculateConfidence(std::map<std::string, double> logposteriorDict)
     //# output: confidence score of the genotype with the maximum posterior
     //# confidence score is computed by the ratio of the maximum posterior and the second maximum posterior
     double maxVar = std::max(logposteriorDict["AA/AB"], logposteriorDict["AA/BB"]);
-    std::vector<double> altList(logposteriorDict.size());
+    std::vector<double> altList(0);
     for(auto& it : logposteriorDict){
         if(it.first != "AA/AB" and it.first != "AA/BB")
             altList.push_back(it.second);
@@ -96,11 +96,12 @@ void outputGenotyping(std::string outputFile,
     //# only somatic variants are output currently
     //# all variants should be output
     //# related global variables:
-    std::ofstream output(outputFile);
+    std::ofstream output;
+    output.open(outputFile, std::ofstream::out | std::ofstream::app);
 
     output << "\"" << chrom << "\"" << "\t";
     output << "\"" << pos << "\"" << "\t";
-    output << "\"" << std::toupper(ref) << "\"" << "\t";
+    output << "\"" << (char)std::toupper(ref) << "\"" << "\t";
     output << "\"" << cntNormal << "\"" << "\t";
     output << "\"" << cntVarNormal << "\"" << "\t";
     output << "\"" << cntTumor << "\"" << "\t";
@@ -109,11 +110,11 @@ void outputGenotyping(std::string outputFile,
     output << "\"" << cntVarTumorMerge << "\"" << "\t";
     output << "\"" << variantBase << "\"" << "\t";
     output << "\"" << jointGenotypeMAP << "\"" << "\t";
-    output << "\"" << VAFTumor << "\"" << "\t";
-    output << "\"" << confidence << "\"" << "\t";
+    output << "\"" << std::setprecision(12) << VAFTumor << "\"" << "\t";
+    output << "\"" << std::setprecision(28) << confidence << "\"" << "\t";
     output << "\"" << jointGenotypeMAPMerge << "\"" << "\t";
-    output << "\"" << VAFTumorMerge << "\"" << "\t";
-    output << "\"" << confidenceMerge << "\"" << "\t";
+    output << "\"" << std::setprecision(12) << VAFTumorMerge << "\"" << "\t";
+    output << "\"" << std::setprecision(28) << confidenceMerge << "\"" << "\t";
     for(std::string& s : baseinfoList)
         output << "\"" << s << "\"" << "\t";
     output << "\n";
@@ -129,6 +130,9 @@ void callVariants(std::string finput,
 {
     std::ifstream inputFile(finput);
 
+    // Clear existing output file text
+    std::ofstream outputFile(foutput_call);
+    outputFile.close();
 
     int n = 0;
     int m = 0;
@@ -170,7 +174,7 @@ void callVariants(std::string finput,
 
         std::map<char, int> basecountNotCombined = countBase(basestringNotCombined);
         std::map<char, int> basecountExtendedFrags = countBase(baseStringExtendedFrags);
-        char variantBase = findMajorVariant(basecountNotCombinedAll, basecountExtendedFrags);
+        char variantBase = findMajorVariant(basecountNotCombinedAll, basecountExtendedFragsAll);
 
         std::map<char, int> basecountTumorAll = countBase(basestringAll);
         std::map<char, int> basecountTumor = countBase(basestring);
@@ -194,8 +198,8 @@ void callVariants(std::string finput,
         if(std::count(basestringNormalAllUpper.begin(), basestringNormalAllUpper.end(), variantBase) > GERMLINE_VARIANT_COUNT_BEFORE_QUAL_FILTER)
             continue;
 
-        std::string basestringUpper = toUpper(basestring);
-        if(std::count(basestringUpper.begin(), basestringUpper.end(), variantBase) > GERMLINE_VARIANT_COUNT)
+        std::string basestringNormalUpper = toUpper(basestringNormal);
+        if(std::count(basestringNormalUpper.begin(), basestringNormalUpper.end(), variantBase) > GERMLINE_VARIANT_COUNT)
             continue;
 
         std::string basestringMerge = baseStringExtendedFrags + basestringNotCombined;
@@ -216,17 +220,16 @@ void callVariants(std::string finput,
             continue;
 
         std::string basestringMergeUpper = toUpper(basestringMerge);
-        std::string basestringNormalUpper = toUpper(basestringNormal);
-
+        std::string basestringUpper = toUpper(basestring);
         double cntVarTumor = std::count(basestringUpper.begin(), basestringUpper.end(), variantBase);
-        double cntVarTumorMerge = std::count(basestringMerge.begin(), basestringMerge.end(), variantBase);
-        double cntVarNormal = std::count(basestringNormal.begin(), basestringNormal.end(), variantBase);
+        double cntVarTumorMerge = std::count(basestringMergeUpper.begin(), basestringMergeUpper.end(), variantBase);
+        double cntVarNormal = std::count(basestringNormalUpper.begin(), basestringNormalUpper.end(), variantBase);
 
-        double VAFTumorMerge = cntVarTumorMerge/basestring.size();
+        double VAFTumorMerge = cntVarTumorMerge/basestringMerge.size();
         double VAFTumor = cntVarTumor/basestring.size();
         double VAFNormal = cntVarNormal/basestringNormal.size();
 
-        int cntAltNormal = std::count(basestringNormalUpper.begin(), basestringNormalUpper.end(), 'R');
+        int cntAltNormal = basestringNormalUpper.size() - std::count(basestringNormalUpper.begin(), basestringNormalUpper.end(), 'R');
         int cntNormal = basestringNormal.size();
 
         if(VAFNormal > SOMATIC_VAF_THRESHOLD_IN_NORMAL)
@@ -253,9 +256,8 @@ void callVariants(std::string finput,
             if( VAFTumor <= genotypeThreshold and VAFTumorMerge <= genotypeThreshold)
                 outputGenotyping(foutput_call, chrom, pos, ref, cntNormal, cntVarNormal, basestring.size(), cntVarTumor, basestringMerge.size(), cntVarTumorMerge, variantBase, jointGenotypeMAP, VAFTumor, confidence, jointGenotypeMAPMerge, VAFTumorMerge, confidenceMerge, subsp);
         }
-
-        inputFile.close();
     }
+    inputFile.close();
 }
 
 int main(int argc, char *argv[]){

@@ -115,29 +115,27 @@ void selectHotSpot(std::string chrom, std::string pos, std::string basestring, s
         return;
 
     // Exclude strand bias
-    char strandBiasMerge = filterStrandBiasMerge(basecountNotCombined, basecountExtendedFrags, variantBase);
+    bool strandBiasMerge = filterStrandBiasMerge(basecountNotCombined, basecountExtendedFrags, variantBase);
 
     // Require enough percentage in non-reference reads
-    std::tuple<char, char> bothObservedAboveAverageMerge = filterBothStrandAboveAverageMerge(basecountNotCombined,
+    std::tuple<bool, bool> bothObservedAboveAverageMerge = filterBothStrandAboveAverageMerge(basecountNotCombined,
                                                                                              basecountExtendedFrags);
-    char bothObservedMerge = std::get<0>(bothObservedAboveAverageMerge);
-    char aboveAverageMerge = std::get<1>(bothObservedAboveAverageMerge);
+    bool bothObservedMerge = std::get<0>(bothObservedAboveAverageMerge);
+    bool aboveAverageMerge = std::get<1>(bothObservedAboveAverageMerge);
 
-    char supportFragCountMerge = filterSupport(basestringMerge, variantBase);
-    char strandBiasUnmerge = filterStrandBiasUnmerge(basecount, variantBase);
+    bool supportFragCountMerge = filterSupport(basestringMerge, variantBase);
+    bool strandBiasUnmerge = filterStrandBiasUnmerge(basecount, variantBase);
 
     // Require enough percentage in non-reference reads
-    std::tuple<char, char> bothObservedAboveAverageUnmerge = filterBothStrandAboveAverageUnmerge(basecount);
-    char bothObservedUnmerge = std::get<0>(bothObservedAboveAverageUnmerge);
-    char aboveAverageUnmerge = std::get<1>(bothObservedAboveAverageUnmerge);
+    std::tuple<bool, bool> bothObservedAboveAverageUnmerge = filterBothStrandAboveAverageUnmerge(basecount);
+    bool bothObservedUnmerge = std::get<0>(bothObservedAboveAverageUnmerge);
+    bool aboveAverageUnmerge = std::get<1>(bothObservedAboveAverageUnmerge);
 
-    char supportReadCountUnmerge = filterSupport(basestring, variantBase);
+    bool supportReadCountUnmerge = filterSupport(basestring, variantBase);
 
-    if ( strandBiasMerge != 'T' or bothObservedMerge != 'T' or aboveAverageMerge != 'T' or
-         supportFragCountMerge != 'T' )
+    if ( !strandBiasMerge or !bothObservedMerge or !aboveAverageMerge or !supportFragCountMerge )
         return;
-    if ( strandBiasUnmerge != 'T' or bothObservedUnmerge != 'T' or aboveAverageUnmerge != 'T' or
-         supportReadCountUnmerge != 'T' )
+    if ( !strandBiasUnmerge or !bothObservedUnmerge or !aboveAverageUnmerge or !supportReadCountUnmerge)
         return;
 
     HOTSPOT.emplace_back(hotspot(meanQuallistMerge, basestringNormalVariantCount,
@@ -247,6 +245,8 @@ int main(int argc, char *argv[]) {
     std::ifstream file(filename);
 
     std::string lineText;
+    std::string pos;
+
     while ( std::getline(file, lineText)) {
         std::vector<std::string> splitString = split(lineText, "\t");
         std::string chrom = splitString[0];
@@ -256,7 +256,7 @@ int main(int argc, char *argv[]) {
              chrom.find('Y') != std::string::npos )
             continue;
 
-        std::string pos = splitString[1];
+        pos = splitString[1];
         int nread = splitString[19].size();
         std::string basestringAll = splitString[4];
         std::string basestring = splitString[19];
@@ -323,6 +323,9 @@ int main(int argc, char *argv[]) {
 
     std::vector<double> VAF;
     VAF.reserve(HOTSPOT.size());
+
+    std::vector<hotspot> h = HOTSPOT;
+
     for ( hotspot & hs : HOTSPOT ) {
         std::string basestringCombined = hs.basestringNotCombined + hs.basestringExtendedFrags;
         int basecount = std::count(basestringCombined.begin(), basestringCombined.end(), std::toupper(hs.variantBase)) +

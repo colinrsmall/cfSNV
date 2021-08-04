@@ -6,7 +6,7 @@
 #define CFSNV__HELPER_H
 
 #include <cmath>
-
+#include <map>
 
 template <class C>
 int sumMap(std::map<C, int> m){
@@ -35,7 +35,7 @@ std::vector<T> accessMultipleIndicesVector(std::vector<T>& vec, std::vector<int>
     std::vector<T> returnArray(indices.size());
 
     for(int i = 0; i < indices.size(); i++){
-        returnArray[i] = vec[i];
+        returnArray[i] = vec[indices[i]];
     }
 
     return returnArray;
@@ -70,6 +70,45 @@ std::vector<int> getIndicesWhereGreaterThan(std::vector<T>& vec, T comparator){
 
     for(int i = 0; i < vec.size(); i++){
         if (vec[i] > comparator)
+            returnVec.push_back(i);
+    }
+
+    return returnVec;
+}
+
+template <class T>
+std::vector<int> getIndicesWhereGreaterThanOrEqual(std::vector<T>& vec, T comparator){
+
+    std::vector<int> returnVec = {};
+
+    for(int i = 0; i < vec.size(); i++){
+        if (vec[i] >= comparator)
+            returnVec.push_back(i);
+    }
+
+    return returnVec;
+}
+
+template <class T>
+std::vector<int> getIndicesWhereLessThan(std::vector<T>& vec, T comparator){
+
+    std::vector<int> returnVec = {};
+
+    for(int i = 0; i < vec.size(); i++){
+        if (vec[i] < comparator)
+            returnVec.push_back(i);
+    }
+
+    return returnVec;
+}
+
+template <class T>
+std::vector<int> getIndicesWhereLessThanOrEqual(std::vector<T>& vec, T comparator){
+
+    std::vector<int> returnVec = {};
+
+    for(int i = 0; i < vec.size(); i++){
+        if (vec[i] <= comparator)
             returnVec.push_back(i);
     }
 
@@ -144,11 +183,28 @@ bool vecContains(std::vector<T> vec, T t){
 }
 
 
+template <class T>
+double vecMedian(std::vector<T> vec){
+    std::sort(vec.begin(), vec.end());
+    if(vec.size() % 2 == 0)
+        return ( vec[vec.size()/2] + vec[vec.size()/2 - 1])/2;
+    else
+        return vec[vec.size()/2];
+}
+
+//double vecMedian(std::vector<double> vec){
+//    std::sort(vec.begin(), vec.end());
+//    if(vec.size() % 2 == 0)
+//        return ( vec[vec.size()/2] + vec[vec.size()/2 + 1])/2;
+//    else
+//        return vec[vec.size()/2 + 1];
+//}
+
 double sumVector(const std::vector<double>& vec);
 
 double meanVector(const std::vector<double>& vec);
 
-int factorial(int n);
+double factorial(double n);
 
 std::vector<std::string> split(const std::string& s, const std::string& delimiter);
 

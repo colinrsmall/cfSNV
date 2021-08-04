@@ -8,9 +8,9 @@
 #include <cctype>
 
 
-int factorial(int n){
+double factorial(double n){
     if (n == 0)
-        return 1;
+        return 1.0;
     return n * factorial(n - 1);
 }
 
