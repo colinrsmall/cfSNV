@@ -176,11 +176,11 @@ double calculateTumorFractionLikelihood(double tumor_fraction, std::string bases
     double loglikelihood;
     for ( it = PRIOR.begin() ; it != PRIOR.end() ; it++ ) {
         index = it->first;
-        loglikelihood =
-                calculateJointGenotypeTumorFractionLoglikelihood(tumor_fraction, basestring_merge, quallist_merge,
-                                                                 maplist_merge, index, variant_base) +
-                        calculateJointGenotypeTumorFractionLoglikelihood(0.0, basestring_normal, quallist_normal,
-                                                                         maplist_normal, index, variant_base);
+        double l1 = calculateJointGenotypeTumorFractionLoglikelihood(tumor_fraction, basestring_merge, quallist_merge,
+                                                              maplist_merge, index, variant_base);
+        double l2 = calculateJointGenotypeTumorFractionLoglikelihood(0.0, basestring_normal, quallist_normal,
+                                                                     maplist_normal, index, variant_base);
+        loglikelihood = l1 + l2;
         likelihood += exp(loglikelihood + std::log(EST_PRIOR.find(index)->second));
     }
     return likelihood;

@@ -100,7 +100,8 @@ double calculateJointGenotypeTumorFractionLoglikelihood(double tumor_fraction,
 
     rBasestringInterestIndices.insert(rBasestringInterestIndices.end(), xBasestringInterestIndices.begin(), xBasestringInterestIndices.end());
     std::vector<int> interestIndices = rBasestringInterestIndices;
-//    std::vector<int> interestIndices = rBasestringInterestIndices + xBasestringInterestIndices;
+    std::sort(interestIndices.begin(), interestIndices.end());
+    //    std::vector<int> interestIndices = rBasestringInterestIndices + xBasestringInterestIndices;
     std::vector<double> interestQuallist = accessMultipleIndicesVector(quallist, interestIndices);
     std::vector<double> interestMaplist = accessMultipleIndicesVector(maplist, interestIndices);
 
