@@ -23,7 +23,7 @@ h = open(sample+".paired-reads.qsort.nonoverlap.features.expand.RFpred.csv")
 for line in g:
 	sp = line.strip().split('\t')
 	var = sp[len(sp)-6] + '-' + sp[len(sp)-5]
-	pred = double(h.readline().strip())
+	pred = float(h.readline().strip())
 	variant_list[var][2] += 1
 	for i in range(len(threshold)):
 		if pred > threshold[i]:
@@ -37,7 +37,7 @@ h = open(sample+".paired-reads.qsort.overlap.features.expand.RFpred.csv")
 for line in g:
 	sp = line.strip().split('\t')
 	var = sp[len(sp)-6] + '-' + sp[len(sp)-5]
-	pred = double(h.readline().strip())
+	pred = float(h.readline().strip())
 	variant_list[var][3] += 1
 	for i in range(len(threshold)):
 		if pred > threshold[i]:

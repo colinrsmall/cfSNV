@@ -11,6 +11,7 @@
 #include <fstream>
 #include <tuple>
 #include <string>
+#include <iomanip>
 
 std::tuple<std::vector<std::string>, std::vector<bool>, std::string, bool, std::string, std::vector<bool>, std::string, bool, std::string, char, double> generateIntermediateResultOneLine(std::string line, double depth)
 {

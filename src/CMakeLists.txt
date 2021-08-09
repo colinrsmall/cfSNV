@@ -2,13 +2,14 @@ cmake_minimum_required(VERSION 3.16)
 project(cfSNV)
 
 if (UNIX)
-    set (CMAKE_CXX_FLAGS "-g3 -Wall")
+    set (CMAKE_CXX_FLAGS "-g3 -O3 -Wall")
 endif ()
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_C_COMPILER g++)
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -c")
 set(CMAKE_VERBOSE_MAKEFILE 1)
+set(D_GLIBCXX_USE_CXX11_ABI,"0")
 
 
 #include_directories(c)

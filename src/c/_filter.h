@@ -7,6 +7,7 @@
 
 #include "string"
 #include "map"
+#include <vector>
 
 bool filterStrandBiasMerge(std::map<char, int> & basecountNotCombined,
                            std::map<char, int> & basecountExtendedFrags,

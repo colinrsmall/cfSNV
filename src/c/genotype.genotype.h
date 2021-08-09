@@ -6,6 +6,7 @@
 #include <map>
 #include <iostream>
 #include <fstream>
+#include <vector>
 
 #ifndef CFSNV_GENOTYPE_GENOTYPE_H
 #define CFSNV_GENOTYPE_GENOTYPE_H

@@ -2,7 +2,7 @@
 #$ -S /bin/bash
 #$ -cwd
 #$ -j y
-#$ -o log.out
+#$ -o align.$JOB_ID.out
 #$ -l  h_data=2G,h_rt=24:00:00,h_vmem=12G
 #$ -t 1-2:1
 #$ -M colinrsmall@yahoo.com
@@ -31,9 +31,10 @@ java=/u/local/apps/java/jdk1.8.0_111/bin/java
 ### PATH TO BEDTOOLS (ABSOLUTE PATH TO EXECUTABLE FILE)
 bedtools=/u/local/apps/bedtools/2.26.0/gcc-4.4.7/bin/bedtools
 
+#read path fastq1 fastq2 file_id SNP_database reference <<< "`head -$SGE_TASK_ID ${input_file} | tail -1`"
 
+read path fastq1 fastq2 file_id SNP_database reference <<< "`head ${input_file} | tail -1`"
 
-read path fastq1 fastq2 file_id SNP_database reference <<< "`head -$SGE_TASK_ID ${input_file} | tail -1`"
 
 output_dir=${path}
 

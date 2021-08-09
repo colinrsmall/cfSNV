@@ -4,7 +4,7 @@
 
 #include "_jenks.h"
 #include <vector>
-
+#include <algorithm>
 
 std::tuple<std::vector<std::vector<double>>, std::vector<std::vector<double>>> jenksInitMatrices(std::vector<double> data, int nClasses){
     int k = nClasses + 1;
@@ -92,7 +92,7 @@ std::vector<std::vector<double>> separateData(std::vector<double> data, std::vec
 }
 
 std::tuple<std::vector<std::vector<double>>, std::vector<double>> jenks(std::vector<double> data, int nClasses){
-    assert(nClasses > data.size());
+//    assert(nClasses > data.size());
 
     std::sort(data.begin(), data.end());
     auto [lowerClassLimits, x] = jenksMatrices(data, nClasses);

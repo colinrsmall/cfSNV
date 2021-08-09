@@ -10,7 +10,7 @@ INDEL_COUNT = 3
 INDEL_VAF = 0.02
 indel_bins = defaultdict(list)
 for i in range(x.shape[0]):
-    if x[5][i] > INDEL_COUNT or x[7][i]+x[9][i] > INDEL_COUNT or (double(x[6][i]) > 0 and double(x[5][i])/double(x[6][i]) > INDEL_VAF) or (double(x[8][i]) + double(x[10][i]) > 0 and double(x[7][i]+x[9][i])/double(x[8][i]+x[10][i]) > INDEL_VAF):
+    if x[5][i] > INDEL_COUNT or x[7][i]+x[9][i] > INDEL_COUNT or (float(x[6][i]) > 0 and float(x[5][i])/float(x[6][i]) > INDEL_VAF) or (float(x[8][i]) + float(x[10][i]) > 0 and float(x[7][i]+x[9][i])/float(x[8][i]+x[10][i]) > INDEL_VAF):
         current_start = x[11][i]
         current_end = x[12][i]
         current_type = x[2][i]

@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <iomanip>
 
 #include "estimate_TFestimate.h"
 #include "_helper.h"
@@ -288,15 +289,15 @@ int main(int argc, char *argv[]) {
         char variantBase = findMajorVariant(basecountNotCombined, basecountExtendedFrags);
         std::map<char, int> basecountTumorAll = countBase(basestringAll);
         std::map<char, int> basecountTumor = countBase(basestring);
-        char trialleleTumorAll = filterTriallelicPosition(basecountTumorAll, variantBaseAll, depth);
-        char trialleleTumor = filterTriallelicPosition(basecountTumor, variantBaseAll, depth);
+        bool trialleleTumorAll = filterTriallelicPosition(basecountTumorAll, variantBaseAll, depth);
+        bool trialleleTumor = filterTriallelicPosition(basecountTumor, variantBaseAll, depth);
 
         if ( variantBase != variantBaseAll )
             continue;
         if ( std::count(basestring.begin(), basestring.end(), std::toupper(variantBase)) +
              std::count(basestring.begin(), basestring.end(), std::tolower(variantBase)) == 0 )
             continue;
-        if ( trialleleTumorAll == 'F' or trialleleTumor == 'F' )
+        if ( !trialleleTumorAll or !trialleleTumor )
             continue;
 
         std::string basestringNormallAllUpper = toUpper(basestring_normal_all);

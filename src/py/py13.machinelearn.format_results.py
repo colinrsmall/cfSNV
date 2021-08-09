@@ -1,5 +1,6 @@
 from parameter import *
-from src.py._filter import *
+from _jenks import *
+from _filter import *
 import sys
 from collections import defaultdict
 from operator import itemgetter
@@ -17,10 +18,10 @@ for line in f:
 	support_cnt = int(sp[26]) + int(sp[27])
 	if sp[17] == "hold" and support_cnt >= MIN_HOLD_SUPPORT_COUNT:
 		if int(sp[7]) > 50 and int(sp[12]) > 50:
-			VAF_list.append(double(sp[15]))
+			VAF_list.append(float(sp[15]))
 	if sp[17] == "pass" and support_cnt >= MIN_PASS_SUPPORT_COUNT:
 		if int(sp[7]) > 50 and int(sp[12]) > 50:
-			VAF_list.append(double(sp[15]))
+			VAF_list.append(float(sp[15]))
 
 f.close()
 
@@ -37,31 +38,31 @@ for line in f:
 	sp = line.strip().split('\t')
 	support_cnt = int(sp[26]) + int(sp[27])
 	total_cnt = int(sp[12])
-	vaf = double(sp[15])
+	vaf = float(sp[15])
 	if sp[17] == "hold" and  support_cnt > MIN_HOLD_SUPPORT_COUNT:
 		output_seq = sp[0]+'\t' + sp[2] + '\t' + '.' + '\t' + sp[3] + '\t' + sp[4] + '\t' + sp[11] + '\t' + sp[10] + '\t' + str(support_cnt) + '\t' + sp[7] + '\n'
 		dict[sp[0]].append( ( int(sp[2]), output_seq ) )
 		a += 1
 		if int(sp[7]) > 50 and int(sp[12]) > 50:
-			VAF_list.append(double(sp[10]))
+			VAF_list.append(float(sp[10]))
 	elif sp[17] == "hold" and support_cnt > 5 and  binom.cdf(support_cnt, total_cnt, jenks_estimate/2.0) > 0.4:
 		output_seq = sp[0]+'\t' + sp[2] + '\t' + '.' + '\t' + sp[3] + '\t' + sp[4] + '\t' + sp[11] + '\t' + sp[10] + '\t' + str(support_cnt) + '\t' + sp[7] + '\n'
 		dict[sp[0]].append( ( int(sp[2]), output_seq ) )
 		b += 1
 		if int(sp[7]) > 50 and int(sp[12]) > 50:
-			VAF_list.append(double(sp[10]))
+			VAF_list.append(float(sp[10]))
 	if sp[17] == "pass" and support_cnt > MIN_PASS_SUPPORT_COUNT:
 		output_seq = sp[0]+'\t' + sp[2] + '\t' + '.' + '\t' + sp[3] + '\t' + sp[4] + '\t' + sp[11] + '\t' + sp[10] + '\t' + str(support_cnt) + '\t' + sp[7] + '\n'
 		dict[sp[0]].append( ( int(sp[2]), output_seq ) )
 		c += 1
 		if int(sp[7]) > 50 and int(sp[12]) > 50:
-			VAF_list.append(double(sp[10]))
+			VAF_list.append(float(sp[10]))
 	elif sp[17] == "pass" and support_cnt > 3 and binom.cdf(support_cnt, total_cnt, jenks_estimate/2.0) > 0.4:
 		output_seq = sp[0]+'\t' + sp[2] + '\t' + '.' + '\t' + sp[3] + '\t' + sp[4] + '\t' + sp[11] + '\t' + sp[10] + '\t' + str(support_cnt) + '\t' + sp[7] + '\n'
 		dict[sp[0]].append( ( int(sp[2]), output_seq ) )
 		d += 1
 		if int(sp[7]) > 50 and int(sp[12]) > 50:
-			VAF_list.append(double(sp[10]))
+			VAF_list.append(float(sp[10]))
 
 f.close()
 

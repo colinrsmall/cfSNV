@@ -10,6 +10,7 @@
 #include <map>
 #include <iostream>
 #include <fstream>
+#include <iomanip>
 
 //# log( P( G, X | theta ) )
 //# P( G | X , theta ) ~ P( G, X | theta )

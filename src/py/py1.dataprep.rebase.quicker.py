@@ -1,5 +1,6 @@
 from parameter import *
-from src.py._filter import *
+from _probability import *
+from _filter import *
 import numpy as np
 
 
@@ -38,9 +39,9 @@ def rebase_with_frequent_variant_allele(string, qual_string, map_string):
 			mod_map_string += map_string[j]
 			j += 1
 			i += 1
-			if 10.0**(-double(ord(qual_string[j-1])-33)/10.0) > BASEQUAL_THRESHOLD:
+			if 10.0**(-float(ord(qual_string[j-1])-33)/10.0) > BASEQUAL_THRESHOLD:
 				continue
-			if 10.0**(-double(ord(map_string[j-1])-33)/10.0) > MAPQUAL_THRESHOLD:
+			if 10.0**(-float(ord(map_string[j-1])-33)/10.0) > MAPQUAL_THRESHOLD:
 				continue
 			mod_base_string_pass += 'R'
 			mod_qual_string_pass += qual_string[j-1]
@@ -52,9 +53,9 @@ def rebase_with_frequent_variant_allele(string, qual_string, map_string):
 			mod_map_string += map_string[j]
 			j += 1
 			i += 1
-			if 10.0**(-double(ord(qual_string[j-1])-33)/10.0) > BASEQUAL_THRESHOLD:
+			if 10.0**(-float(ord(qual_string[j-1])-33)/10.0) > BASEQUAL_THRESHOLD:
 				continue
-			if 10.0**(-double(ord(map_string[j-1])-33)/10.0) > MAPQUAL_THRESHOLD:
+			if 10.0**(-float(ord(map_string[j-1])-33)/10.0) > MAPQUAL_THRESHOLD:
 				continue
 			mod_base_string_pass += 'r'
 			mod_qual_string_pass += qual_string[j-1]
@@ -66,9 +67,9 @@ def rebase_with_frequent_variant_allele(string, qual_string, map_string):
 			cdict[base.upper()][2] += map_string[j]
 			j += 1
 			i += 1
-			if 10.0**(-double(ord(qual_string[j-1])-33)/10.0) > BASEQUAL_THRESHOLD:
+			if 10.0**(-float(ord(qual_string[j-1])-33)/10.0) > BASEQUAL_THRESHOLD:
 				continue
-			if 10.0**(-double(ord(map_string[j-1])-33)/10.0) > MAPQUAL_THRESHOLD:
+			if 10.0**(-float(ord(map_string[j-1])-33)/10.0) > MAPQUAL_THRESHOLD:
 				continue
 			cdict[base.upper()][3] += base
 			cdict[base.upper()][4] += qual_string[j-1]
@@ -80,9 +81,9 @@ def rebase_with_frequent_variant_allele(string, qual_string, map_string):
 			cdict[base.upper()][2] += map_string[j]
 			j += 1
 			i += 1
-			if 10.0**(-double(ord(qual_string[j-1])-33)/10.0) > BASEQUAL_THRESHOLD:
+			if 10.0**(-float(ord(qual_string[j-1])-33)/10.0) > BASEQUAL_THRESHOLD:
 				continue
-			if 10.0**(-double(ord(map_string[j-1])-33)/10.0) > MAPQUAL_THRESHOLD:
+			if 10.0**(-float(ord(map_string[j-1])-33)/10.0) > MAPQUAL_THRESHOLD:
 				continue
 			cdict[base.upper()][3] += base
 			cdict[base.upper()][4] += qual_string[j-1]
@@ -252,10 +253,10 @@ def pileup_to_rebase_frequent_variant_whole_file(input, output, indel): #, norma
 				continue
 			if len(basestring_normal) < DEPTH_FOR_DETECTION_NORMAL:
 				continue
-			VAF_normal = double(cnt_var_normal)/double(len(basestring_normal))
+			VAF_normal = float(cnt_var_normal)/float(len(basestring_normal))
 			cnt_var_tumor_merge = basestring_merge.upper().count(variant_base)
-			VAF_tumor_merge = double(cnt_var_tumor_merge)/double(len(basestring_merge))
-			VAF_tumor = double(cnt_var_tumor)/double(len(basestring))
+			VAF_tumor_merge = float(cnt_var_tumor_merge)/float(len(basestring_merge))
+			VAF_tumor = float(cnt_var_tumor)/float(len(basestring))
 			if VAF_normal > SOMATIC_VAF_THRESHOLD_IN_NORMAL:
 				continue
 			elif cnt_var_normal > NORMAL_COUNT_VAR or cnt_alt_normal > NORMAL_COUNT_ALT:
@@ -315,7 +316,7 @@ def read_bedcov_to_list(fbedcov):
 		bedcov_chr.append(sp[0])
 		bedcov_start.append(int(sp[1]))
 		bedcov_end.append(int(sp[2]))
-		bedcov_coverage.append(double(sp[len(sp) - 1]))
+		bedcov_coverage.append(float(sp[len(sp) - 1]))
 	bedcov.close()
 	bedcov_list = [bedcov_chr, bedcov_start, bedcov_end, bedcov_coverage]
 	return bedcov_list
@@ -330,14 +331,14 @@ def adjust_bedcov_coverage_with_flagstat(bedcov_list, fflagstat):
 			break
 		else:
 			tmp = flagstat.readline()
-	read_count = double(sp[0])
+	read_count = float(sp[0])
 	flagstat.close()
 	#print tmp
 	#print read_count
 	#bedcov_coverage = [ i * LARGE_NUMBER_FOR_NORMALIZATION / read_count for i in bedcov_list[3] ]
-        bedcov_coverage = [ double(bedcov_list[3][i])/double(bedcov_list[2][i] - bedcov_list[1][i]) for i in range(len(bedcov_list[3])) ]
-        avg_coverage = sum(bedcov_coverage)/double(len(bedcov_coverage))
-        std_coverage = std(bedcov_coverage, dtype=np.double64)
+        bedcov_coverage = [ float(bedcov_list[3][i])/float(bedcov_list[2][i] - bedcov_list[1][i]) for i in range(len(bedcov_list[3])) ]
+        avg_coverage = sum(bedcov_coverage)/float(len(bedcov_coverage))
+        std_coverage = std(bedcov_coverage, dtype=np.float64)
         bedcov_coverage = [ (i-avg_coverage)/std_coverage for i in bedcov_coverage]
 	bedcov_list[3] = bedcov_coverage
 	return
@@ -353,7 +354,7 @@ if __name__ == "__main__":
 	finput = sys.argv[1]
 	foutput = sys.argv[2]
 	findel = sys.argv[3]
-	depth = double(sys.argv[4])
+	depth = float(sys.argv[4])
 	GERMLINE_VARIANT_COUNT = get_germline_variant_count_threshold(depth)
 	NORMAL_COUNT_BINOM = get_normal_count_binom_threshold(depth)
 #	fnormal_flagstat = sys.argv[3]

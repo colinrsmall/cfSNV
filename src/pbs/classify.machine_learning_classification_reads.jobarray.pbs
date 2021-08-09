@@ -5,6 +5,8 @@
 #$ -m a
 #$ -l  h_data=4G,h_rt=24:00:00,h_vmem=16G,highp
 #$ -t 1-1:1
+#$ -o classify.$JOB_ID.log
+#$ -M colinrsmall@yahoo.com
 
 . /u/local/Modules/default/init/modules.sh
 module load samtools
@@ -32,7 +34,7 @@ python=/u/local/apps/anaconda/python2-4.2.0/bin/python
 bedtools=/u/local/apps/bedtools/2.26.0/gcc-4.4.7/bin/bedtools
 
 ### PATH TO cfSNV SOURCE CODES (ABSOLUTE PATH TO THE FOLDER CONTAINING SOURCE CODES)
-cfSNV=/u/home/c/colinrsm/cfSNV/src
+cfSNV=/u/home/c/colinrsm/cfSNV/src/py
 
 
 ###### MAIN COMMANDS

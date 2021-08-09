@@ -25,7 +25,7 @@ def split_query_file_to_features(query_file):
                 for line in f:
                         sp = line.strip().split('\t')
                         if sp[0] == 'id': continue
-                        X.append( np.array(map(double, sp[1:len(sp)])) )
+                        X.append( np.array(map(float, sp[1:len(sp)])) )
         return np.array(X)
 
 
@@ -50,7 +50,7 @@ def split_query_file_to_features(query_file):
                 for line in f:
                         sp = line.strip().split('\t')
                         if sp[0] == 'id': continue
-                        X.append( np.array(map(double, sp[1:len(sp)])) )
+                        X.append( np.array(map(float, sp[1:len(sp)])) )
         return np.array(X)
 
 

@@ -7,6 +7,7 @@
 
 #include <cmath>
 #include <map>
+#include <algorithm>
 
 template <class C>
 int sumMap(std::map<C, int> m){
