@@ -169,7 +169,7 @@ bool filterTriallelicPosition(std::map<char, int> basecount, char var, int depth
     double otherVAF = (double)otherCount/totalCount;
     if(varCount == 0 or otherVAF/varVAF > TRIALLELE_VAF_RATIO)
         return false;
-    if(otherVAF > TRIALLELE_VAF and totalCount >= 0)
+    if(otherVAF > TRIALLELE_VAF and totalCount >= 80)
         return false;
     if(otherCount > TRIALLELE_COUNT and totalCount <= 140)
         return false;

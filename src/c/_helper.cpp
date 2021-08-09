@@ -32,7 +32,7 @@ std::vector<char> accessMultipleIndicesString(std::string str, std::vector<int>&
     returnVec.reserve(indices.size());
 
     for(int i = 0; i < indices.size(); i++){
-        returnVec.push_back(str[i]);
+        returnVec.push_back(str[indices[i]]);
     }
 
     return returnVec;

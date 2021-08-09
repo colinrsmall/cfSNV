@@ -19,7 +19,8 @@ std::tuple<std::vector<std::string>, std::vector<bool>, std::string, bool, std::
     std::vector<std::string> sp = split(line, "\t");
 
     for(int i = 0; i < sp.size(); i++)
-        sp[i] = sp[i].substr(1, sp[i].size()-2);
+        if(!sp[i].empty())
+                sp[i] = sp[i].substr(1, sp[i].size()-2);
 
     std::string chrom = sp[0];
     std::string pos = sp[1];
@@ -304,7 +305,10 @@ int main(int argc, char *argv[]){
     double depth = std::stod(argv[9]);
 
     std::vector<double> VAFList = generateIntermediateResultWholeFile(fInput, fIntermediate, SNPDatabase, depth);
-    auto [jenksEstimate, includeNumber, includeGroup] = finalEstimationWithJenks(VAFList);
+    auto t = finalEstimationWithJenks(VAFList);
+    double jenksEstimate = std::get<0>(t);
+    int includeNumber = std::get<1>(t);
+    int includeGroup = std::get<2>(t);
     int n = generateRecordAndOutputWholeFile(fIntermediate, fOutputPass, fOutputCheck, fRecord, jenksEstimate);
 
     std::ofstream TF(fTF);

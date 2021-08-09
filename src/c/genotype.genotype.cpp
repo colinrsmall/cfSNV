@@ -54,7 +54,8 @@ double calculateConfidence(std::map<std::string, double> logposteriorDict)
             altList.push_back(it.second);
     }
     double maxAlt = *std::max_element(altList.begin(), altList.end());
-    return std::exp(maxVar)/std::exp(maxAlt);
+    double confidence = std::exp(maxVar)/std::exp(maxAlt);
+    return confidence;
 }
 
 std::string calculateGenotype(std::map<std::string, double> logposteriorDict)
@@ -175,13 +176,13 @@ void callVariants(std::string finput,
 
         std::map<char, int> basecountNotCombined = countBase(basestringNotCombined);
         std::map<char, int> basecountExtendedFrags = countBase(baseStringExtendedFrags);
-        char variantBase = findMajorVariant(basecountNotCombinedAll, basecountExtendedFragsAll);
+        char variantBase = findMajorVariant(basecountNotCombined, basecountExtendedFrags);
 
         std::map<char, int> basecountTumorAll = countBase(basestringAll);
         std::map<char, int> basecountTumor = countBase(basestring);
 
-        char trialleleTumorAll = filterTriallelicPosition(basecountTumorAll, variantBaseAll, depth);
-        char trialleleTumor = filterTriallelicPosition(basecountTumor, variantBase, depth);
+        bool trialleleTumorAll = filterTriallelicPosition(basecountTumorAll, variantBaseAll, depth);
+        bool trialleleTumor = filterTriallelicPosition(basecountTumor, variantBase, depth);
 
         if(variantBase != variantBaseAll)
             continue;
@@ -190,7 +191,7 @@ void callVariants(std::string finput,
            std::count(basestring.begin(), basestring.end(), std::tolower(variantBase)) == 0)
             continue;
 
-        if(trialleleTumorAll == 'F' or trialleleTumor == 'F')
+        if(!trialleleTumorAll or !trialleleTumor)
             continue;
 
         std::string basestringNormalAllUpper = toUpper(basestringNormalAll);

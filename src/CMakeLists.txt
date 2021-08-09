@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 project(cfSNV)
 
 if (UNIX)
-    set (CMAKE_CXX_FLAGS "-g3 -O3 -Wall")
+    set (CMAKE_CXX_FLAGS "-g3 -Wall")
 endif ()
 
 set(CMAKE_CXX_STANDARD 17)
