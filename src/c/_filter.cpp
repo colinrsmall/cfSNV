@@ -31,11 +31,11 @@ bool filterStrandBiasMerge(std::map<char, int> & basecountNotCombined,
         else
             return true;
     }
-    else if(forwardVar == 0 and forward != 0)
+    else if(forwardVar == 0 and forward == 0)
         return true;
     else if(forwardVar == 0 and forward != 0)
     {
-        if ( binomialPMF(reverseVar, forwardVar + reverseVar, (double) reverseVar / (forward + reverse)) <
+        if ( binomialPMF(reverseVar, forwardVar + reverseVar, (double) reverse / (forward + reverse)) <
              STRAND_BIAS_BINOMIAL_PROB )
             return false;
         else

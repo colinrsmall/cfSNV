@@ -161,8 +161,9 @@ std::vector<double> generateIntermediateResultWholeFile(std::string filename, st
         g << VAFDescriptionUnmerge << '\t';
         g << boolToChar(tumorCoverageUnmerge) << '\t';
         g << tumorCoverageDescrptionUnmerge << '\t';
-        g << boolToChar(inVAF) << '\t';
-        g << VAFMerge << '\t' << '\n';
+        g << '\n';
+//        g << boolToChar(inVAF) << '\t';
+//        g << VAFMerge << '\t' << '\n';
     }
     g.close();
     f.close();
@@ -176,6 +177,7 @@ const std::string headerOutputFile = "chromosome\tposition\treference\tvariant\t
 
 std::vector<std::string> generateRecordOneLine(std::string line, double jenks_estimate){
     std::vector<std::string> sp = split(line, "\t");
+    sp.pop_back();
     std::string chrom = sp[0];
     std::string pos = sp[1];
     std::string ref = sp[2];
@@ -209,14 +211,14 @@ std::tuple<std::vector<std::string>, std::string, std::string, std::string> deci
     
     if(record[28] == "T" and record[41] == "T" and merge[0] == "T" and merge[2] == "T" and merge[3] == "T" and merge[4] == "T" and merge[5] == "T" and merge[6] == "T" and merge[7] == "T" and merge[8] == "T" and merge[9] == "T")
         mergeStatus = "pass";
-    else if(record[28] == "T" and record[41] == "T" and merge[0] == "T" and merge[2] == "T" and merge[3] == "T" and merge[4] == "T" and merge[9] == "T")
+    else if(record[28] == "T" and record[41] == "T" and merge[0] == "T" and merge[2] == "T" and merge[3] == "T" and merge[4] == "T" and merge[5] == "T" and merge[9] == "T")
         mergeStatus = "hold";
     else
         mergeStatus = "reject";
 
     if(record[28] == "T" and record[41] == "T" and unmerge[0] == "T" and unmerge[2] == "T" and unmerge[3] == "T" and unmerge[4] == "T" and unmerge[5] == "T" and unmerge[6] == "T" and unmerge[7] == "T" and unmerge[8] == "T" and unmerge[9] == "T")
         unmergeStatus = "pass";
-    else if(record[28] == "T" and record[41] == "T" and unmerge[0] == "T" and unmerge[2] == "T" and unmerge[3] == "T" and unmerge[4] == "T" and unmerge[9] == "T")
+    else if(record[28] == "T" and record[41] == "T" and unmerge[0] == "T" and unmerge[2] == "T" and unmerge[3] == "T" and unmerge[4] == "T" and merge[5] == "T" and unmerge[9] == "T")
         unmergeStatus = "hold";
     else
         unmergeStatus = "reject";

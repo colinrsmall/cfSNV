@@ -7,22 +7,32 @@
 #include <iostream>
 #include <chrono>
 #include "_helper.h"
+#include <boost/math/distributions/binomial.hpp>
 
 
 double binomialPMF(int k, int n, double p){
     double binomialCoefficient = (double) factorial(n) / (factorial(k) * factorial(n-k));
+    if( isnan(binomialCoefficient))
+        throw MATH_ERREXCEPT;
     return binomialCoefficient * std::pow(p, k) * std::pow(1-p, n-k);
 }
 
-double binomialCDF(int k, int n, double p){
-    double cdf = 0;
+//double binomialCDF(int k, int n, double p){
+//    double cdf = 0;
+//
+//    for(int i = 0; i < k+1; i++){
+//        double binomialCoefficient = factorial(n) / (factorial(i) * factorial(n-i));
+//        cdf += binomialCoefficient * std::pow(p, i) * std::pow(1-p, n-i);
+//    }
+//    return (double) cdf;
+//}
 
-    for(int i = 0; i < k+1; i++){
-        double binomialCoefficient = factorial(n) / (factorial(i) * factorial(n-i));
-        cdf += binomialCoefficient * std::pow(p, i) * std::pow(1-p, n-i);
-    }
-    return (double) cdf;
+
+double binomialCDF(int k, int n, double p){
+    return boost::math::cdf(boost::math::binomial(n, p), k);
 }
+
+
 
 std::map<char, int> countBase(std::string basestring) {
     std::map<char, int> basecount = {{'A',0}, {'a',0}, {'C',0}, {'c',0}, {'G',0}, {'g',0}, {'T',0}, {'t',0}, {'R',0}, {'r',0}};

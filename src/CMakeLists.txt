@@ -5,6 +5,14 @@ if (UNIX)
     set (CMAKE_CXX_FLAGS "-g3 -Wall")
 endif ()
 
+#SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "/usr/local/opt/boost")
+#SET(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "/usr/local/opt/boost/lib")
+
+set(Boost_DEBUG 1)
+
+find_package( Boost REQUIRED )
+include_directories( ${Boost_INCLUDE_DIR} )
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_C_COMPILER g++)
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -c")
@@ -43,3 +51,7 @@ add_executable(filterWithPileup
         c/_filter.h c/_filter.cpp
         c/_jenks.h c/_jenks.cpp
         c/filter_with_pileup.h c/filter_with_pileup.cpp)
+
+TARGET_LINK_LIBRARIES( tfEstimate LINK_PUBLIC ${Boost_LIBRARIES} )
+TARGET_LINK_LIBRARIES( genotype LINK_PUBLIC ${Boost_LIBRARIES} )
+TARGET_LINK_LIBRARIES( filterWithPileup LINK_PUBLIC ${Boost_LIBRARIES} )

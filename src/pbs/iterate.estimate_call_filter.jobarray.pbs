@@ -41,7 +41,7 @@ tmp_dir=${path}/tmp
 depth_dir=${tmp_dir}/depth
 input_dir=${tmp_dir}/rebase
 output_dir=${tmp_dir}/py/variant
-filter_dir=${tmp_dir}/filter
+filter_dir=${tmp_dir}/py/filter
 estimate_dir=${tmp_dir}/py/estimate
 pileup_dir=${tmp_dir}/pileup
 
