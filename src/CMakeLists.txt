@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 project(cfSNV)
 
 if (UNIX)
-    set (CMAKE_CXX_FLAGS "-g3 -Wall")
+    set (CMAKE_CXX_FLAGS "-g3 -O3 -Wall")
 endif ()
 
 #SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "/usr/local/opt/boost")

@@ -190,7 +190,7 @@ std::vector<std::string> generateRecordOneLine(std::string line, double jenks_es
     bool binomTestMerge = filterSupportingCountByBinomialTest(jenks_estimate, basestringMerge, variantBase);
     sp.insert(sp.begin()+40, std::string(1, boolToChar(binomTestMerge)));
     sp.emplace_back(std::string(1, boolToChar(binomTestUnmerge)));
-    return sp;
+;    return sp;
 }
 
 std::tuple<std::vector<std::string>, std::string, std::string, std::string> decideOutputStatusOneLine(std::vector<std::string> record){
@@ -218,7 +218,7 @@ std::tuple<std::vector<std::string>, std::string, std::string, std::string> deci
 
     if(record[28] == "T" and record[41] == "T" and unmerge[0] == "T" and unmerge[2] == "T" and unmerge[3] == "T" and unmerge[4] == "T" and unmerge[5] == "T" and unmerge[6] == "T" and unmerge[7] == "T" and unmerge[8] == "T" and unmerge[9] == "T")
         unmergeStatus = "pass";
-    else if(record[28] == "T" and record[41] == "T" and unmerge[0] == "T" and unmerge[2] == "T" and unmerge[3] == "T" and unmerge[4] == "T" and merge[5] == "T" and unmerge[9] == "T")
+    else if(record[28] == "T" and record[41] == "T" and unmerge[0] == "T" and unmerge[2] == "T" and unmerge[3] == "T" and unmerge[4] == "T" and unmerge[5] == "T" and unmerge[9] == "T")
         unmergeStatus = "hold";
     else
         unmergeStatus = "reject";
@@ -314,6 +314,6 @@ int main(int argc, char *argv[]){
     int n = generateRecordAndOutputWholeFile(fIntermediate, fOutputPass, fOutputCheck, fRecord, jenksEstimate);
 
     std::ofstream TF(fTF);
-    TF << n << '\t' << jenksEstimate << '\t' << std::setprecision(4) << jenksEstimate/2.0 << '\t' << includeNumber << '\t' << includeGroup << '\t' << mergedVAFThreshold << '\n';
+    TF << n << '\t' << std::setprecision(2) << std::fixed << jenksEstimate << '\t' << std::setprecision(4) << std::fixed << jenksEstimate/2.0 << '\t' << includeNumber << '\t' << includeGroup << '\t' << mergedVAFThreshold << '\n';
     TF.close();
 }

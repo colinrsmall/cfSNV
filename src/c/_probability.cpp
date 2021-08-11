@@ -11,10 +11,11 @@
 
 
 double binomialPMF(int k, int n, double p){
-    double binomialCoefficient = (double) factorial(n) / (factorial(k) * factorial(n-k));
-    if( isnan(binomialCoefficient))
-        throw MATH_ERREXCEPT;
-    return binomialCoefficient * std::pow(p, k) * std::pow(1-p, n-k);
+//    double binomialCoefficient = (double) factorial(n) / (factorial(k) * factorial(n-k));
+//    if( isnan(binomialCoefficient))
+//        throw std::overflow_error("Factorial overflow in binomialPMF()");
+//    return binomialCoefficient * std::pow(p, k) * std::pow(1-p, n-k);
+    return boost::math::pdf(boost::math::binomial(n, p), k);
 }
 
 //double binomialCDF(int k, int n, double p){

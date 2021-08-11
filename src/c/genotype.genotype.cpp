@@ -66,7 +66,7 @@ std::string calculateGenotype(std::map<std::string, double> logposteriorDict)
     double maxVal = -DBL_MAX;
     std::string maxString;
     for(auto& it : logposteriorDict){
-        if(it.second > maxVal) {
+        if(it.second >= maxVal) {
             maxVal = it.second;
             maxString = it.first;
         }
@@ -112,11 +112,11 @@ void outputGenotyping(std::string outputFile,
     output << "\"" << cntVarTumorMerge << "\"" << "\t";
     output << "\"" << variantBase << "\"" << "\t";
     output << "\"" << jointGenotypeMAP << "\"" << "\t";
-    output << "\"" << std::setprecision(12) << VAFTumor << "\"" << "\t";
-    output << "\"" << std::setprecision(28) << confidence << "\"" << "\t";
+    output << "\"" << std::setprecision(12) << std::fixed << VAFTumor << "\"" << "\t";
+    output << "\"" << std::setprecision(28) << std::fixed << confidence << "\"" << "\t";
     output << "\"" << jointGenotypeMAPMerge << "\"" << "\t";
-    output << "\"" << std::setprecision(12) << VAFTumorMerge << "\"" << "\t";
-    output << "\"" << std::setprecision(28) << confidenceMerge << "\"" << "\t";
+    output << "\"" << std::setprecision(12) << std::fixed << VAFTumorMerge << "\"" << "\t";
+    output << "\"" << std::setprecision(28) << std::fixed << confidenceMerge << "\"" << "\t";
     for(std::string& s : baseinfoList)
         output << "\"" << s << "\"" << "\t";
     output << "\n";

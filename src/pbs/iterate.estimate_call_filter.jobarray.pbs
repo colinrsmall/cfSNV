@@ -84,14 +84,15 @@ while true; do
 ### MUTATION CLUSTER FREQUENCY ESTIMATION
 echo ${input_dir}/${sample_id}.rebase ${threshold} ${sample_id} ${depth} ${estimate_dir}/${sample_id}.${threshold}.C_merged_normal.HOTSPOT.VAF ${estimate_dir}/${sample_id}.${threshold}.C_merged_normal.estimate
 ${python} ${cfSNV}/py2.estimate.TFestimate.py ${input_dir}/${sample_id}.rebase ${threshold} ${sample_id} ${depth} ${estimate_dir}/${sample_id}.${threshold}.C_merged_normal.HOTSPOT.VAF ${estimate_dir}/${sample_id}.${threshold}.C_merged_normal.estimate
-echo "tfestimate done"
 
 read estimate < ${estimate_dir}/${sample_id}.${threshold}.C_merged_normal.estimate
 
 ### CANDIDATE DETECTION AT THE CURRENT FREQUENCY
+echo ${cfSNV}/py3.genotype.genotype.py ${input_dir}/${sample_id}.rebase ${output_dir}/${sample_id}.${threshold}.variant ${estimate} ${threshold} ${depth}
 ${python} ${cfSNV}/py3.genotype.genotype.py ${input_dir}/${sample_id}.rebase ${output_dir}/${sample_id}.${threshold}.variant ${estimate} ${threshold} ${depth}
 
 ### SITE-LEVEL FILTRATION
+echo ${cfSNV}/py4.filter.filter_with_pileup.py  ${output_dir}/${sample_id}.${threshold}.variant ${filter_dir}/${sample_id}.${threshold}.intermediate ${filter_dir}/${sample_id}.${threshold}.pass ${filter_dir}/${sample_id}.${threshold}.hold ${filter_dir}/${sample_id}.${threshold}.record ${estimate_dir}/${sample_id}.${threshold}.jenks_estimate ${threshold} ${SNP_database} ${depth}
 ${python} ${cfSNV}/py4.filter.filter_with_pileup.py  ${output_dir}/${sample_id}.${threshold}.variant ${filter_dir}/${sample_id}.${threshold}.intermediate ${filter_dir}/${sample_id}.${threshold}.pass ${filter_dir}/${sample_id}.${threshold}.hold ${filter_dir}/${sample_id}.${threshold}.record ${estimate_dir}/${sample_id}.${threshold}.jenks_estimate ${threshold} ${SNP_database} ${depth}
 
 read n_pass_hold jenk_estimate threshold others < ${estimate_dir}/${sample_id}.${threshold}.jenks_estimate
